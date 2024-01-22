@@ -54,7 +54,7 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
   *	Bộ điều khiển DDR3 dùng cho bộ nhớ DDR3_SDRAM bên ngoài 
 
     <p align="center">
-    <img src ="./docs/pics/Readme/l1view.JPG" width="40%" height="80%"/>
+    <img src ="./pics/Readme/l1view.JPG" width="40%" height="80%"/>
     </p>
     <p align = "center">
     <i>Thiết kế của hệ vi xử lý trong bài thực hành này</i>
@@ -64,7 +64,7 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
    Bài thực hành này hướng dẫn các bạn quy trình mở rộng hệ thống tính toán đã được xây dựng trong bài thực hành trước bằng cách thêm hai lõi IP GPIO (General Purpose Input/Output)
    
    <p align="center">
-   <img src ="./docs/pics/Readme/l2view.jpg" width="80%" height="80%"/>
+   <img src ="./pics/Readme/l2view.jpg" width="80%" height="80%"/>
    </p>
    <p align = "center">
    <i>Mở rộng Hệ thống trong bài thực hành 1</i>
@@ -77,7 +77,7 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
   Các bạn sẽ mở rộng thiết kế phần cứng trong bài thực hành số 2 bằng cách tạo mới và thêm một thiết bị ngoại vi dùng giao tiếp AXI vào hệ thống, và kết nối nó đến các đèn LED trên bo mạch Zynq đang được sử dụng. Các bạn sẽ sử dụng bộ đóng gói IP (IP Packager) để sinh ra một IP tùy biến. Sau đó, các bạn sẽ kết nối thiết bị ngoại vi này vào hệ thống và thêm các ràng buộc về vị trí chân (pin location) để kết nối thiết bị ngoại vi điều khiển màn hình LED đến màn hình LED trên bo mạch. Cuối cùng, các bạn sẽ thêm bộ điều khiển BRAM và BRAM trước khi tạo ra bitstream.
 
   <p align="center">
-  <img src ="./docs/pics/Readme/l3view.jpg" width="80%" height="80%"/>
+  <img src ="./pics/Readme/l3view.jpg" width="80%" height="80%"/>
   </p>
   <p align = "center">
   <i>Thiết kế được cập nhật từ các bài thực hành trước đó</i>
@@ -97,10 +97,10 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
    Các bạn sẽ sử dụng thiết kế phần cứng được tạo ra trong bài thực hành số 4 để sử dụng bộ định thời riêng của CPU (xem trong Hình). Các bạn sẽ phát triển mã nguồn để sử dụng nó.
 
    <p align="center">
-   <img src ="./docs/pics/Readme/l5view.jpg" width="80%" height="80%"/>
+   <img src ="./pics/Readme/l5view.jpg" width="80%" height="80%"/>
    </p>
    <p align = "center">
-   <i>Thiết kế cuối cùng</i>
+   <i>Thiết kế hoàn chỉnh</i>
    </p>
 
 ### Bài thực hành 6
@@ -108,7 +108,7 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
   Phần mềm và phần cứng tương tác với nhau trong các hệ thống nhúng. Vitis bao gồm bộ gỡ rối hệ thống (System Debugger) được dùng như một công cũ gỡ rối phần mềm. Công cụ phân tích phần cứng (hardware analyzer) có các loại lõi thiết kế khác nhau cho phép gỡ rối phần cứng bằng cách cho phép truy cập các tín hiện nội bộ mà không cần phải kết nối ra các chân của chip. Các lõi gỡ rối phần cứng (hardware debug cores) này nằm ở trong phần lô-gíc có thể lập trình được (PL) của thiết bị và có thể được cấu hình với nhiều chế độ có thể theo dõi tín hiệu ở trong thiết kế. Trong bài thực hành này, các bạn sẽ được giới thiệu về các lõi gỡ rối khác nhau.
 
   <p align="center">
-  <img src ="././docs/pics/Readme/l6view.png" width="80%" height="80%"/>
+  <img src ="./pics/Readme/l6view.png" width="80%" height="80%"/>
   </p>
   <p align = "center">
   </p>
@@ -118,7 +118,7 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
   Trong hệ thống Zynq, nhiều kết nối sẵn sàng giữa phần hệ thống xử lý (PS) và phần lô-gíc lập trình được (PL) với các mức độ hiệu năng truyền dữ liệu khác nhau giữa hai hệ thống con. Kết nối bus AXI Chủ (Master) và Tớ (Slave) đa dụng (GP) dùng trong các bài thực hành trước đó được dùng cho các thiết bị ngoại vi không yêu cầu băng thông cao ví dụ các công tắc, các đèn led, bàn phím, chuột. Có 4 giao diện AXI hiệu năng cao từ bus tớ PS sang bus chủ PL dùng cho các thiết bị ngoại vi cần băng thông cao hơn ví dụ các ứng dụng xử lý hình ảnh và Video. Bài thực hành này sẽ hướng dẫn các bạn quy trình kích hoạt một cổng bus tớ AXI hiệu năng cao trong phần PS, thêm vào một bộ điều khiển truy cập bộ nhớ trực tiếp trung tâm (CDMA), và thực hiện Truy cập bộ nhớ trực tiếp (DMA) giữa các bộ nhớ.
   
   <p align="center">
-  <img src ="././docs/pics/Readme/l7view.png" width="80%" height="80%"/>
+  <img src ="./pics/Readme/l7view.png" width="80%" height="80%"/>
   </p>
   <p align = "center">
   </p>
@@ -127,7 +127,7 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
   Bài thực hành này hướng dẫn các bạn các bước tạo mới một hệ thống có khả năng khởi động từ thẻ nhớ SD hoặc từ bộ nhớ QSPI Flash trên bo mạch. Bài thực hành này cũng thể hiện các bitstream khác nhau có thể được nạp lên phần PL sau khi bo mạch được khởi động lên và các ứng dụng tương ứng có thể được thực thi.
 
   <p align="center">
-  <img src ="././docs/pics/Readme/l8view.png" width="60%" height="60%"/>
+  <img src ="./pics/Readme/l8view.png" width="60%" height="60%"/>
   </p>
   <p align = "center">
 
