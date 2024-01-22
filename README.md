@@ -1,108 +1,111 @@
-# Embedded System Design Flow on Zynq
+# Luồng thiết kế hệ thống nhúng trên Zynq
 
-## Labs outline
+## Tóm lược các bài thực hành
 
-The purpose of This workshop is to walk you through a complete hardware and software processor system design. It provides participants the necessary skills to develop complex embedded systems and enable them to improve their designs by using the tools available in Vivado and Vitis IDE. It also helps developers understand and utilize advanced components of embedded systems design for architecting a complex system in the Zynq™ System on a Chip (SoC)
+Mục đích của tài liệu này là hướng dẫn các bạn thiết kế một hệ thống hoàn chỉnh từ phần cứng đến phần mềm. Nó cung cấp cho người học những kỹ năng cần thiết để phát triển các hệ thống nhúng phức tạp và cho phép họ cải thiện thiết kế bằng cách sử dụng các công cụ có sẵn trong Vivado và Vitis IDE. Nó cũng giúp các nhà phát triển hiểu và sử dụng các phần nâng cao của thiết kế hệ thống nhúng để kiến trúc một hệ thống phức tạp trong hệ thống trên một chip Zynq™.
 
-## Source Files Setup
+## Cài đặt các tập tin mã nguồn
 
-To use the source files for each of the labs in this workshop, you have to download or clone this repository from GitHub. 
+Để sử dụng các mã nguồn cho mỗi bài thực hành trong khóa học này, các bạn phải tải về hoặc nhân bản kho lưu trữ này từ GitHub.
 
-On the main GitHub webpage for a repository, you can select **Clone or download** and select **Download Zip** to download an archive of the repository. You can then extract this to a folder on your local machine. 
+Trên trang GitHub chính cho một kho lưu trữ (repository), các bạn có thể lựa chọn **Clone or download** và chọn **Download Zip** để tải về tập tin nén của kho lưu trữ đó. Sau đó, các bạn có thể giải nén tập tin này thành một thư mục trên máy tính của bạn.
 
-If you prefer to use **git** you can clone this repository:
+Nếu bạn muốn sử dụng **git** bạn có thể sao chép kho lưu chữ này bằng lệnh:
 
 ```
   git clone https://github.com/Xilinx/xup_embedded_system_design_flow
 ```
-In the instructions for the labs;
+Trong hướng dẫn cho các bài thực hành;
 
-**{sources}** refers to the ./sources directory in this respoitory once you have copied or cloned it to a local directory. 
+**{sources}** chỉ thư mục ./sources trong kho lưu chữ này sau khi các bạn đã sao chép hoặc nhân bản kho lưu trữ này vào một thư mục nội bộ.
 
-**{labs}** refers to the location which you will use as your workspace for the labs in the workshop.
+**{labs}** chỉ vị trí được dùng như là khu vực làm việc (workspace) cho mỗi bài thực hành trong khóa học này.
 
-**{Vitis_Workspace}** refers your workspace directory to launch Vitis IDE.
+**{Vitis_Workspace}** chỉ thư mục làm việc để chạy Vitis IDE.
 
 ---
-**NOTE**
+**Chú ý**
 
-Board support for PYNQ-Z2 are not included in Vivado by default. The relevant files need to be extracted and saved to: {Vivado installation}\data\boards\board_files\
+Cấu hình cho bo mạch PYNQ-Z2 mặc định chưa được tích hợp vào Vivado. Các tập tin liên quan cần được giải nén và lưu vào thư mục: {Vivado installation}\data\boards\board_files\
 
-If you do not see the board_files folder, create it manually.
+Nếu chưa có thư mục board_files, hãy tạo nó bằng tay.
 
-These files can be downloaded from
+Các tập tin này có thể được tải về tại đây:
 
 PYNQ-Z2:[/board_files](/board_files/).
 
 ---
 
-## Hardware Setup
+## Cấu hình phần cứng
 
-**PYNQ-Z2**:  Connect a micro USB from the board to the PC. Make sure that a jumper is connected to JTAG (between JP1_1 and JP1_2) and another one of them should be connected across the USB pins (between J9_2 and J9_3).
+**PYNQ-Z2**: Kết nối cáp micro USB từ bo mạch vào máy tính. Hãy chắc chắn là chân nối (jumper) được kết nối vào JTAG (giữa chân JP1_1 và JP1_2) và một chân khác trong số chúng nên được kết nối qua các chân USB (giữa chân J9_2 và J9_3).
 
-## Extra Resources:
-   The Zynq book can be used to find more information about Zynq technology that is seen in these labs. It is available for free download at http://www.zynqbook.com/.
-## Labs Overview:
 
-### Lab 1
+## Đọc thêm:
+   Cuốn sách Zynq có thể được dùng để tìm hiểu thêm thông tin về công nghệ Zynq được sử dụng trong các bài thực hành này. Cuốn sách có thể được tải miễn phí tại http://www.zynqbook.com/.
+   
+## Tổng quan các bài thực hành:
 
-  In this lab, you will use IP Integrator to create a processing system based design consisting of the following :
-  *	ARM Cortex A9 core (PS)
-  *	UART for serial communication
-  *	DDR3 controller for external DDR3_SDRAM memory
+### Bài thực hành 1
+
+Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (IP Integrator) để tạo ra một thiết kế dựa trên hệ thống tính toán bao gồm các thành phần sau:
+  *	Lõi ARM Cortex A9 (PS)
+  *	UART để truyền thông nối tiếp
+  *	Bộ điều khiển DDR3 dùng cho bộ nhớ DDR3_SDRAM bên ngoài 
 
     <p align="center">
     <img src ="./docs/pics/Readme/l1view.JPG" width="40%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Processor Design of this Lab</i>
+    <i>Thiết kế của hệ vi xử lý trong bài thực hành này</i>
     </p>
 
-### Lab 2
-   This lab guides you through the process of extending the processing system you created in the previous lab by adding two GPIO (General Purpose Input/Output) IPs.
+### Bài thực hành 2
+   Bài thực hành này hướng dẫn các bạn quy trình mở rộng hệ thống tính toán đã được xây dựng trong bài thực hành trước bằng cách thêm hai lõi IP GPIO (General Purpose Input/Output)
    
    <p align="center">
    <img src ="./docs/pics/Readme/l2view.jpg" width="80%" height="80%"/>
    </p>
    <p align = "center">
-   <i>Extend the System from the Previous Lab</i>
+   <i>Mở rộng Hệ thống trong bài thực hành 1</i>
    </p>
 
-### Lab 3
+### Bài thực hành 3
 
-  This lab guides you through the process of creating and adding a custom peripheral to a processor system by using the Vivado IP Packager. You will create an AXI4Lite interface peripheral.
+  Bài thực hành này hướng dẫn các bạn quy trình tạo và thêm một thiết bị ngoại vi tùy biến vào một hệ thống vi xử lý bằng cách sử dụng công cụ Vivado IP Packager. Các bạn sẽ tạo một thiết bị ngoại vi dùng giao diện AXI4Lite.
 
-  You will extend the Lab 2 hardware design by creating and adding an AXI peripheral to the system, and connecting it to the LEDs on the Zynq board you are using.  You will use the IP Packager to generate the custom IP.    Next, you will connect the peripheral to the system and add pin location constraints to connect the LED display controller peripheral to the on-board LED display.  Finally, you will add BRAM Controller and BRAM before generating the bitstream.
+  Các bạn sẽ mở rộng thiết kế phần cứng trong bài thực hành số 2 bằng cách tạo mới và thêm một thiết bị ngoại vi dùng giao tiếp AXI vào hệ thống, và kết nối nó đến các đèn LED trên bo mạch Zynq đang được sử dụng. Các bạn sẽ sử dụng bộ đóng gói IP (IP Packager) để sinh ra một IP tùy biến. Sau đó, các bạn sẽ kết nối thiết bị ngoại vi này vào hệ thống và thêm các ràng buộc về vị trí chân (pin location) để kết nối thiết bị ngoại vi điều khiển màn hình LED đến màn hình LED trên bo mạch. Cuối cùng, các bạn sẽ thêm bộ điều khiển BRAM và BRAM trước khi tạo ra bitstream.
 
   <p align="center">
   <img src ="./docs/pics/Readme/l3view.jpg" width="80%" height="80%"/>
   </p>
   <p align = "center">
-  <i>Design updated from the previous lab</i>
+  <i>Thiết kế được cập nhật từ các bài thực hành trước đó</i>
   </p>
 
-### Lab 4
+### Bài thực hành 4
 
-  This lab guides you through the process of writing a basic software application.  The software you will develop will write to the LEDs on the Zynq board.  An AXI BRAM controller and associated 8KB BRAM were added in the last lab. The application will be run from the BRAM by modifying the linker script for the project to place the text section of the application in the BRAM.  You will verify that the design operates as expected, by testing in hardware.
+  Bài thực hành này hướng dẫn các bạn quy trình viết một ứng dụng phần mềm cơ bản. Phần mềm mà các bạn phát triển sẽ viết vào các đèn LED trên bo mạch Zynq. Bộ điều khiển AXI BRAM và bộ nhớ BRAM 8KB đi kèm đã được thêm vào trong bài thực hành trước đó. Ứng dụng sẽ chạy từ bộ nhớ BRAM bằng cách thay đổi các kịch bản liên kết (linker script) dành cho dự án này để đặt vùng nhớ mã lệnh (text section) của ứng dụng vào trong bộ nhớ BRAM. Các bạn sẽ kiểm chứng thiết kế hoạt động như mong muốn bằng cách kiểm tra trên phần cứng. 
 
-  The design was extended at the end of the previous lab to include a memory controller, and the bitstream should now be available. A basic software application will be developed to access the LEDs on the Zynq boards.  
+  Thiết kế được mở rộng ở phần cuối của bài thực hành trước đó để thêm bộ điều khiển bộ nhớ, và bitstream đến thời điểm này đã sẵn sàng. Một ứng dụng phần mềm đơn giản sẽ được phát triển để truy cập các LED trên bo mạch Zynq.
 
 ### Lab 5
 
-   This lab guides you through the process of writing a software application that utilizes the private timer of the CPU.  You will refer to the timer’s API in the Vitis IDE to create and debug the software application.  The application you will develop will monitor the dip switch values and increment a count on the LEDs.  The application will exit when the center push button is pressed.
+   Bài thực hành này hướng dẫn các bạn quy trình viết một ứng dụng phần mềm sử dụng bộ định thời (timer) của CPU. Các bạn sẽ tham chiếu các API của bộ định thời trong công vụ Vitis IDE để tạo mới và gỡ rối các ứng dụng phần mềm. Các ứng dụng mà các bạn phát triển sẽ theo dõi các giá trị của công tắc trượt (dip switch) và tăng một giá trị đếm hiển thị qua đèn LED. Ứng dụng sẽ kết thúc khi nút bấm (push button) trung tâm được nhất. 
+   
 
-   You will use the hardware design created in lab 4 to use CPU’s private timer (see Figure).  You will develop the code to use it.
+   Các bạn sẽ sử dụng thiết kế phần cứng được tạo ra trong bài thực hành số 4 để sử dụng bộ định thời riêng của CPU (xem trong Hình). Các bạn sẽ phát triển mã nguồn để sử dụng nó.
 
    <p align="center">
    <img src ="./docs/pics/Readme/l5view.jpg" width="80%" height="80%"/>
    </p>
    <p align = "center">
-   <i>Final design</i>
+   <i>Thiết kế cuối cùng</i>
    </p>
 
-### Lab 6
+### Bài thực hành 6
 
-  Software and hardware interact with each other in an embedded system. The Vitis includes System Debugger as a software debugging tool.  The hardware analyzer tool has different types of cores that allow hardware debugging by providing access to internal signals without requiring the signals to be connected to package pins. These hardware debug cores may reside in the programmable logic (PL) portion of the device and can be configured with several modes that can monitor signals within the design. In this lab you will be introduced to the various debugging cores.  
+  Phần mềm và phần cứng tương tác với nhau trong các hệ thống nhúng. Vitis bao gồm bộ gỡ rối hệ thống (System Debugger) được dùng như một công cũ gỡ rối phần mềm. Công cụ phân tích phần cứng (hardware analyzer) có các loại lõi thiết kế khác nhau cho phép gỡ rối phần cứng bằng cách cho phép truy cập các tín hiện nội bộ mà không cần phải kết nối ra các chân của chip. Các lõi gỡ rối phần cứng (hardware debug cores) này nằm ở trong phần lô-gíc có thể lập trình được (PL) của thiết bị và có thể được cấu hình với nhiều chế độ có thể theo dõi tín hiệu ở trong thiết kế. Trong bài thực hành này, các bạn sẽ được giới thiệu về các lõi gỡ rối khác nhau.
 
   <p align="center">
   <img src ="././docs/pics/Readme/l6view.png" width="80%" height="80%"/>
@@ -111,9 +114,9 @@ PYNQ-Z2:[/board_files](/board_files/).
   </p>
 
 
-### Lab 7
-  In Zynq, multiple interconnections are available between the PS and PL sections with different performance levels for data transfer between the two subsystems. The General Purpose (GP) Master and Slave AXI interconnect used in the previous labs are intended for peripherals that do not have high bandwidth requirements. E.g. switches, leds, keyboard, mouse. There are four High Performance PS slave to PL master AXI interfaces available for peripherals that need higher bandwidth. E.g. Video and image processing applications. This lab guides you through the process of enabling a High Performance AXI slave port in the PS, adding an AXI central DMA (CDMA) controller, and performing Direct Memory Access (DMA) operations between various memories.
-
+### Bài thực hành 7
+  Trong hệ thống Zynq, nhiều kết nối sẵn sàng giữa phần hệ thống xử lý (PS) và phần lô-gíc lập trình được (PL) với các mức độ hiệu năng truyền dữ liệu khác nhau giữa hai hệ thống con. Kết nối bus AXI Chủ (Master) và Tớ (Slave) đa dụng (GP) dùng trong các bài thực hành trước đó được dùng cho các thiết bị ngoại vi không yêu cầu băng thông cao ví dụ các công tắc, các đèn led, bàn phím, chuột. Có 4 giao diện AXI hiệu năng cao từ bus tớ PS sang bus chủ PL dùng cho các thiết bị ngoại vi cần băng thông cao hơn ví dụ các ứng dụng xử lý hình ảnh và Video. Bài thực hành này sẽ hướng dẫn các bạn quy trình kích hoạt một cổng bus tớ AXI hiệu năng cao trong phần PS, thêm vào một bộ điều khiển truy cập bộ nhớ trực tiếp trung tâm (CDMA), và thực hiện Truy cập bộ nhớ trực tiếp (DMA) giữa các bộ nhớ.
+  
   <p align="center">
   <img src ="././docs/pics/Readme/l7view.png" width="80%" height="80%"/>
   </p>
@@ -121,12 +124,15 @@ PYNQ-Z2:[/board_files](/board_files/).
   </p>
 
 ### Lab 8
-  This lab guides you through creating a bootable system capable of booting from the SD card or the QSPI flash memory located on the board. It also demonstrates how different bitstreams can be loaded in the PL section after the board is booted up and the corresponding application can be executed.
+  Bài thực hành này hướng dẫn các bạn các bước tạo mới một hệ thống có khả năng khởi động từ thẻ nhớ SD hoặc từ bộ nhớ QSPI Flash trên bo mạch. Bài thực hành này cũng thể hiện các bitstream khác nhau có thể được nạp lên phần PL sau khi bo mạch được khởi động lên và các ứng dụng tương ứng có thể được thực thi.
 
   <p align="center">
   <img src ="././docs/pics/Readme/l8view.png" width="60%" height="60%"/>
   </p>
   <p align = "center">
-  
+
+### Credit
+Nội dung này được dịch bởi nhóm nghiên cứu về Hệ thống tíc hợp thông minh, Viện Công nghệ thông tin, Đại học Quốc gia Hà Nội.
+
   ------------------------------------------------------
-<p align="center">Copyright&copy; 2022, Advanced Micro Devices, Inc.</p>
+<p align="center">Bản quyền&copy; 2022, Tập đoàn Advanced Micro Devices.</p>
