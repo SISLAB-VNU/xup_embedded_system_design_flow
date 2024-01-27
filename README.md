@@ -89,7 +89,7 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
 
   Thiết kế được mở rộng ở phần cuối của bài thực hành trước đó để thêm bộ điều khiển bộ nhớ, và bitstream đến thời điểm này đã sẵn sàng. Một ứng dụng phần mềm đơn giản sẽ được phát triển để truy cập các LED trên bo mạch Zynq.
 
-### Lab 5
+### Bài thực hành 5
 
    Bài thực hành này hướng dẫn các bạn quy trình viết một ứng dụng phần mềm sử dụng bộ định thời (timer) của CPU. Các bạn sẽ tham chiếu các API của bộ định thời trong công vụ Vitis IDE để tạo mới và gỡ rối các ứng dụng phần mềm. Các ứng dụng mà các bạn phát triển sẽ theo dõi các giá trị của công tắc trượt (dip switch) và tăng một giá trị đếm hiển thị qua đèn LED. Ứng dụng sẽ kết thúc khi nút bấm (push button) trung tâm được nhất. 
    
@@ -123,7 +123,7 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
   <p align = "center">
   </p>
 
-### Lab 8
+### Bài thực hành 8
   Bài thực hành này hướng dẫn các bạn các bước tạo mới một hệ thống có khả năng khởi động từ thẻ nhớ SD hoặc từ bộ nhớ QSPI Flash trên bo mạch. Bài thực hành này cũng thể hiện các bitstream khác nhau có thể được nạp lên phần PL sau khi bo mạch được khởi động lên và các ứng dụng tương ứng có thể được thực thi.
 
   <p align="center">
