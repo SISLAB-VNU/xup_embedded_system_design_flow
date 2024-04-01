@@ -134,5 +134,3 @@ Trong bài thực hành này, các bạn sẽ sử dụng bộ tích hợp IP (I
 ### Credit
 Nội dung này được dịch bởi nhóm nghiên cứu Hệ thống tích hợp thông minh, [Viện Công nghệ thông tin, Đại học Quốc gia Hà Nội](https://iti.vnu.edu.vn).
 
-  ------------------------------------------------------
-<p align="center">Bản quyền&copy; 2022, Tập đoàn Advanced Micro Devices.</p>

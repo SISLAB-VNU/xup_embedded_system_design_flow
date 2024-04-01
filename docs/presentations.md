@@ -24,5 +24,3 @@ layout: default
 | Lab7 Intro |  [![alt text](./pics/pdf.png)](https://github.com/Xilinx/xup_embedded_system_design_flow/tree/main/slides/23a_Lab7_Intro.pdf) |
 | Lab8 Intro |  [![alt text](./pics/pdf.png)](https://github.com/Xilinx/xup_embedded_system_design_flow/tree/main/slides/24a_Lab8_Intro.pdf) |
 
----------------------------------------
-<p class="copyright">Copyright© 2022, Advanced Micro Devices, Inc.</p>
