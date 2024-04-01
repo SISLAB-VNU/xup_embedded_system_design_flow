@@ -1,239 +1,244 @@
-# Use Vivado to build an Embedded System
+# Xây dựng một Hệ thống nhúng hoàn chỉnh
 
-## Objectives
+## Mục tiêu
 
-After completing this lab, you will be able to:
-*	Create a Vivado project for a Zynq system.
-*	Use the IP Integrator to create a hardware system.
-*	Use Vitis IDE to create a standard memory test project.
-*	Run the test application on the board and hence verify hardware functionality.
+Sau khi hoàn thành Lab này, bạn sẽ có thể:
 
-## Steps
-### Create a Vivado Project
+* Tạo một thiết kế hệ thống nhúng sử dụng Vivado và SDK flow
+* Định cấu hình cho Processing System (PS)
+* Thêm IP theo tiêu chuẩn của Xilinx trong Programmable Logic (PL)
+* Sử dụng SDK để xây dựng một dự án phần mềm và kiểm thử chức năng của thiết kế trong phần cứng 
+## Các bước
 
-1.	Open Vivado by selecting **Start > All Programs > Xilinx Design Tools > Vivado 2021.2**
-1.	Click **Create Project** to start the wizard. You will see the Create a New Vivado Project dialog box. Click Next.
-1.	Click the Browse button of the Project Location field of the New Project and browse to **{labs}**, and click Select.
-1.	Enter **lab1** in the Project Name field.  Make sure that the **Create Project Subdirectory** box is checked.  Click Next.
-1.	In the Project Type form select **RTL Project**, and check the box **Do not specify sources at this time**. Click **Next**
-1.	In the Default Part window, select the Boards tab, and depending on the board you are using, (if you can't find the board you are looking for, refer to ![README.md](/README.md) for setup) and click Next.
+## Tạo một dự án trong Vivado
+
+### Khởi chạy Vivado và tạo một dự án trống với vi mạch đích là PYNQ-Z1 hoặc PYNQ-Z2, chọn ngôn ngữ đích là Verilog
+
+1. Mở Vivado bằng cách chọn **Start > All Programs > Xilinx Design Tools > Vivado 2021.2**
+1. Chọn **Create Project** để bắt đầu chương trình. Bạn sẽ nhìn thấy hiện lên trang _Create A New Vivado Project_ . Chọn **Next**.
+1. Chọn Browse button của trường _Project Location_ trong **New Project** , duyệt đến **{labs}** , và chọn **Select**.
+1. Nhập **lab1** trong trường _Project Name_.  Hãy chắc chắn rằng mục _Create Project Subdirectory_ được tick.  Chọn **Next**.
+1. Chọn **RTL Project** trong _Project Type_ form, và đánh dấu vào ô **Do not specify sources at this time**. Bấm chọn **Next**.
+1.	Trong cửa sổ _Default Part_, chọn **Boards**, và phụ thuộc vào bo mạch mà bạn đang sử dụng, (Nếu không thể tìm thấy bo mạch, làm theo hướng dẫn tại  ![README.md](/README.md) để cấu hình) và bấm chọn **Next**.
+
 
     <p align="center">
     <img src ="pics/lab1/1_BoardsandParts.jpg" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Boards and Parts Selection</i>
+    <i>Lựa chọn Bo mạch và parts</i>
     </p>
 
-1.	Check the Project Summary (should be similar to what you see below) and click Finish to create an empty Vivado project.
+1. Kiểm tra phần thông tin tổng hợp dự án (**Poject Summary**) (tương tự như trong hình dưới đây) và chọn **Finish** để tạo một dự án Vivado trống.
     <p align="center">
     <img src ="pics/lab1/2_ProjectSummary.jpg" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Project Summary</i>
+    <i>Thông tin tổng hợp dự án</i>
     </p>
 
+### Tạo hệ thống sử dụng bộ tích hợp IP (**IP Integrator)
 
-### Creating the System Using the IP Integrator
-
-1.	In the Flow Navigator, click **Create Block Design** under IP Integrator.
+1. Tạo một khối thiết kế trong dự án Vivado sử dụng IP Integrator để tạo ra một hệ thống phần cứng dựa trên bộ xử lý ARM Cortext-A9
+1. Trong _Flow Navigator_, ấn chọn **Create Block Design** trong **IP Integrator**.
     <p align="center">
     <img src ="pics/lab1/3_CreateIP.jpg" width="20%" height="20%"/>
     </p>
     <p align = "center">
-    <i>Create IP Integrator Block Diagram</i>
+    <i>Tạo khối thiết kế với IP Integrator</i>
     </p>
 
-1.	Enter **system** for the design name and click OK.
+1. Đặt tên cho hệ thống và ấn chọn **OK**.
 
-1.	Right-click anywhere in the Diagram workspace and select **Add IP**.
+1. Chuột phải vào bất cứ chỗ nào trong cửa sổ **Diagram** và chọn **Add IP**.
     <p align="center">
     <img src ="pics/lab1/4_AddIP.jpg" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Add IP to Block Diagram</i>
+    <i>Thêm IP vào khối thiết kế</i>
     </p>        
 
+1. Khi **IP Catalog** được mở, gõ "zynq" vào thanh tìm kiếm, tìm và bấm đúp chuột vào mục **ZYNQ7 Processing System**, hoặc bấm vào mục và ấn nút **Enter** để thêm IP vào thiết kế.
 
-1.	Once the **IP Catalog** opens, type “zynq” into the Search bar, find and double click on **ZYNQ7 Processing System** entry, or click on the entry and hit the Enter key to add it to the design.
+1. Chú ý thông báo màu xanh ở phía trên cùng của cửa sổ **Diagram** để được hỗ trợ thiết kế. Chọn **Run Block Automation**.
 
-1.	Notice the message at the top of the Diagram window in a green label saying that Designer Assistance available. Click **Run Block Automation**.  
+1. Cửa sổ mới hiện lên được gọi là cửa sổ **Run Block Automation**. Trong đấy, chọn **processing_system7_0**, giữ nguyên cấu hình cơ bản và bấm chọn **OK**.
 
-1.	A new window pops up called the Run Block Automation window. In it, select **/processing_system7_0**, leave the default settings and click OK.
+1. Khi **Block Automation** hoàn thành, một khối thiết kế của vi xử lý Zynq sẽ xuất hiện với các chân **DDR** (Double Data Rate, một dạng bộ nhớ), **Fixed IO**, và một số các chân khác được nối tự động. Cấu hình nhúng cho vi xử lý Zynq tương thích với bo mạch được áp dụng và có thể thay đổi ngay sau đây. Khối thiết kế nên nhìn giống như sau:
 
-1. Once Block Automation has been completed, notice that ports have been automatically added for the DDR (double data rate, a type of memory) and Fixed IO, and some additional ports are now visible. The imported configuration for the Zynq related to the board has been applied which will now be modified. The block should finally look like this:
-
-    <p align="center">
+	<p align="center">
     <img src ="pics/lab1/5_Zynqblck.jpg" width="90%" height="80%"/>
     </p>
     <p align = "center">
-     <i> Zynq Block with DDR and Fixed IO ports</i>
-    </p>  
+     <i> Khối Zynq với các chân DDR và Fixed IO</i>
+    </p>
+	
+1. Bấm đúp chuột vào khối Zynq để mở cửa số **Customization**.
+   Chú ý rằng cửa sổ **Customization** sẽ hiển thị các khối ngoại vi được chọn (peripherals) (với các dấu tích). Đây là cấu hình cơ bản cho bo mạch được sinh ra bởi **Block Automation**.
 
-1. Double-click on the added block to open the **Customization** window.
-   Notice now the Customization window shows selected peripherals (with tick marks). This is the default configuration for the board applied by the block automation.
+#### Cấu hình khối vi xử lý chỉ với cổng ngoại vi UART 1.
 
-###	Configure the processing block with just UART 1 peripheral enabled.
+1. Khối thiết kế của Zynq sẽ được mở lại, hiển thị nhiều khối có thể cấu hình của hệ thống xử lý (**Processing System**).
 
-1.	A block diagram of the Zynq should now be open again, showing various configurable blocks of the **Processing System**.
+1. Tại bước này, người thiết kế có thể chọn nhiều loại khối có thể cấu hình (in đậm màu xanh) and thay đổi cấu hình hệ thống.
 
-1. At this stage, the designer can click on various configurable blocks (highlighted in green) and change the system configuration.
+1. Chọn một trong các ngoại vi (màu xanh) trong khối **Peripheral I/O Pins** của khối thiết kế Zynq, hoặc chọn mục **MIO Configuration** ở bên trái để mở dạng cấu hình.
 
-1.	Click on one of the peripherals (in green) in the **Peripheral I/O Pins** block of the Zynq Block Design, or select the **MIO Configuration** tab on the left to open the configuration form
-
-1.	Expand **Peripheral I/O Pins** if necessary, and ensure all the following I/O peripherals are deselected except UART 1.
-
-    >**Note :** Select UART 0 for PYNQ-Z2 instead of UART 1
-
-
-    i.e. Remove: &nbsp; <i>ENET
+1. Tăng số lượng chân **Peripheral I/O Pins** nếu cần thiết, và đảm bảo tất cả các cổng ngoại vi sau không được chọn, trừ **UART 1**.
+   
+   >**Chú ý :** Chọn **UART 0** cho PYNQ-Z2 thay vì **UART 1**.
+   
+    i.e. Bỏ chọn: &nbsp; <i>ENET
 
     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; USB 0
 
     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SD 0
 
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Expand **GPIO** to deselect GPIO MIO
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Bấm vào **GPIO** để bỏ chọn GPIO MIO
 
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Expand **Memory Interfaces** to deselect Quad SPI Flash
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Bấm vào **Memory Interfaces** để bỏ chọn Quad SPI Flash
 
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Expand **Application Processor Unit** to disable Timer 0.
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Bấm vào **Application Processor Unit** để bỏ chọn Timer 0.
     </i>
 
     <p align="center">
     <img src ="pics/lab1/6_UART.jpg" width="90%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Selecting only UART 1</i>
+    <i> Chỉ chọn UART 1</i>
     </p>  
 
+1. Chọn mục **PS-PL Configuration** ở phía bên trái.
 
-1.	Select the **PS-PL Configuration** tab on the left.
+1. Bấm vào **AXI Non Secure Enablement > GP Master AXI Interface** và bỏ chọn MAXI GP0 Interface.
 
-1.	Expand **AXI Non Secure Enablement > GP Master AXI interface** and deselect M AXI GP0 interface.
+1. Mở rộng **General > Enable Clock Resets** và bỏ chọn mục FCLK_RESETN0_N.
 
-1.	Expand **General > Enable Clock Resets** and deselect the FCLK_RESET0_N option.
+1. Chọn mục **Clock Configuration** ở bên trái. Mở rộng **PL Fabric Clocks** và bỏ chọn FCLK_CLK0 và chọn **OK**.
 
-1.	Select the **Clock Configuration** tab on the left. Expand the PL Fabric Clocks and deselect the FCLK_CLK0 option and click OK.
-
-1. Click on the **Regenerate Layout button** (green arrow) shown below:
+1. Bấm vào nút **Regenerate Layout** (mũi tên màu xanh) hiển thị dưới đây:
     <p align="center">
     <img src ="pics/lab1/7_RegValid.jpg" width="90%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Regenerating and Validating Design</i>
+    <i> Tái khởi tạo và kiểm thử thiết kế</i>
     </p>  
 
-1.	Click on the **Validate Design button** (purple arrow) and make sure that there are no errors.
+1. Bấm vào nút **Validate Design** (mũi tên màu tím) và đảm bảo rằng không có lỗi.
 
-### Generate Top-Level and Export hardware
+### Tạo **Top-Level** và trích xuất phần cứng
 
-1.	In the sources panel, right-click on **system.bd**, and select **Generate Output Products…** and click Generate to generate the Implementation, Simulation and Synthesis files for the design (You can also click on **Generate Block Design** in the Flow Navigator pane to do the same).
+1. Trong mục **sources**, chuột phải vào **system.bd**, và chọn **Generate Output Products...** và bấm **Generate** để sinh ra các tệp thực thi, mô phỏng và tổng hợp (Implementation, Simulation, Synthesis) cho thiết kế (Bạn có thể bấm chọn **Generate Block Design** trong thanh **Flow Navigator** để làm việc tương tự).
     <p align="center">
     <img src ="pics/lab1/8_OP.jpg" width="40%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Generating output products </i>
+    <i> Tạo sản phẩm sau thiết kế </i>
     </p>  
 
-1. Right-click again on system.bd, and select Create **HDL Wrapper…** to generate the top-level VHDL model. Leave the **Let Vivado manager wrapper** and **auto-update** option selected, and click OK.
+1. Chuột phải một lần nữa vào **system.bd**, và chọn **Create HDL Wrapper...** để tạo ra khối **Top-Level** dưới dạng VHDL. Chọn **Let Vivado manager wrapper** và **auto-update**, và bấm **OK**.
 
-    The system_wrapper.v file will be created and added to the project.  Double-click on the file to see the content in the Auxiliary pane.
+	Tệp tin **system_wrapper.v** sẽ được tạo và thêm vào dự án. Nhấp đúp chuột vào têp tin để xem nội dung trong thanh **Auxiliary**.
     <p align="center">
     <img src ="pics/lab1/9_wrap.jpg" width="40%" height="80%"/>
     </p>
     <p align = "center">
-    <i> The HDL Wrapper file generated and added to the project </i>
+    <i> Tệp tin **HDL Wrapper** được tạo và thêm vào dự án</i>
     </p>  
 
-1. Notice that the Verilog file is already set as the top module in the design, indicated by the icon.
-1. Select **File > Export > Export hardware** and click OK. (Save the project if prompted)
-Note:  Since we do not have any hardware in Programmable Logic (PL) there is no bitstream to generate, hence the Include bitstream option is not necessary at this time.
+1. Chú ý rằng têp tin Verilog đã được đặt là khối thiết kế chính (top module), biểu thị bởi biểu tượng.
+1. Chọn **File > Export > Export Hardware** và bấm **OK**. (Lưu dự án nếu cần thiết)
+Chú ý: Bởi vì không có bất kỳ phần cứng nào trong phần lập trình lô-gíc (**Programmable Logic** (PL)) nên sẽ không có **bitstream** nào được sinh ra. Do đó, lự chọn **Include Bitstream** không cần thiết vào lúc này.
 
-1. Basic information about the hardware configuration of the project can be found in the Xilinx Support Archive (XSA) file, along with the Address maps for the PS systems, and driver information. The .xsa file is used in the software environment to determine the peripherals available in the system, and their location in the address map.
- 
-### Generate Memory Test Application in Vitis IDE
+1. Thông tin cơ bản về cấu hình phần cứng của dự án có thể được tìm thấy trong tệp Xilinx Support Archive (XSA), cùng với thông tin địa chỉ bộ nhớ cho hệ thống PS, và thông tin driver. Tệp .xsa được dùng trong môi trường phần mềm sẽ quyết định thiết bị ngoại vi có thể sử dụng trong hệ thống, và địa chỉ bộ nhớ của chúng.
 
-1. Select **Tools > Launch Vitis IDE**, and Select the workspace location with any given location path. Click Launch. The Vitis IDE opens.
-1. Review the Welcome page and close it. Click **Create Application Project**, and click Next.
-1. In the Platform Selection window, select **Create a new platform from hardware (XSA)** and browse to select the system_wrapper.xsa file exported before. (Default is in the {labs}\lab1 folder).
-1. Enter **lab1_platform** as the _Platform name_, click **Next.**
+### Tạo ứng dụng kiểm tra bộ nhớ trong Vitis IDE
+
+1. Chọn **Tools > Launch Vitis IDE**, và chọn vùng làm việc tùy ý. Bấm **Launch**. **Vitis IDE** sẽ khởi chạy.
+
+1. Kiểm tra phần giới thiệu và đóng khi xong. Bấm vào phần **Create Application Project**, và chọn **Next**.
+
+1. Trong cửa sổ **Platform Selection**, chọn **Create a new platform from hardware (XSA)** và tìm chọn tệp **system_wrapper.xsa** đã được sinh ra từ trước đó. (Mặc định tệp ở trong thư mục {labs}\lab1).
+
+1. Điền **lab1_platform** là tên của nền tảng (_Platform name_), và chọn **Next**.
     <p align="center">
     <img src ="pics/lab1/10_AddPlatform.jpg" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Select a platform to create the project </i>
+    <i> Chọn nền tảng để tạo dự án </i>
     </p> 
 
-1. In the project details window, name the project **lab1**, and in the Target Processor selection, select **ps7_cortexa9_0**.
+1. Trong cửa sổ thông tin chi tiết dự án, đặt tên dự án là **lab1**, và trong phần **Target Processor**, chọn **ps7_cortexa9_0**.
 
-1. Select **Memory Tests** as the template in the Template Selection window. Click **Finish**.
-   <p align="center">
+1. Chọn **Memory Tests** là bản mẫu trong cửa sổ **Template Selection**. Chọn **Finish**
+    <p align="center">
     <img src ="pics/lab1/12_SelTemplate.jpg" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Select a template to create the project </i>
+    <i> Chọn một bản mẫu để tạo dự án </i>
     </p> 
 
-1.	Expand folders in the Explorer view on the left, and observe that there are two projects – lab1_platform, and lab1_system.  The **lab1_system** project is the application that we will use to verify the functionality of the design.  The **lab1_platfrom** is a platform project includes the ps7_init function which initializes the PS as part of the first stage bootloader. The Explorer view should look something like this:
+1. Mở rộng các thư mục trong phần **Explorer** bên trái, và bạn sẽ thấy có hai dự án - lab1_platform, và lab1_system. Dự án **lab1_system** là ứng dụng sẽ được dùng để kiểm chứng tính đúng đắn của thiết kế. **lab1_platform** là dự án nền tảng bao gồm hàm chức năng **ps7_init**, được dùng để khởi tạo PS như một phần của bước đầu trong **bootloader**. **Explorer** nên trông giống như sau:
     <p align="center">
     <img src ="pics/lab1/13_Explorer.jpg" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i> The Project Explorer view </i>
+    <i> Hình ảnh về Project Explorer </i>
     </p>  
 
-1. Open the memorytest.c file in the **lab1_system > lab1 > src**, and examine the contents.  This file calls the functions to test the memory.
+1. Mở tệp tin **memorytests.c** trong phần **lab1_system > lab1 > src**, và kiểm tra nội dung. Tệp này sẽ gọi các chức năng để kiểm tra bộ nhớ.
 
-1. Build the application project either by clicking the hammer button or by right-clicking on the application project and selecting Build Project as shown in following figure. As the project builds, you can see the output in the Console window.
+1. Có thể biên dịch dự án ứng dụng này bằng cách bấm vào nút hình búa hoặc chuột phải trong dự án ứng dụng và chọn **Build Project** như trong hình dưới đây. Khi dự án được biên dịch xong, bạn có thể thấy được thông tin trong cửa sổ **Console**.
     <p align="center">
     <img src ="pics/lab1/14_Build.jpg" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Build the application project </i>
+    <i> Biên dịch dự án ứng dụng </i>
     </p>  
 
-### Test in Hardware
+### Kiểm tra trong phần cứng
 
-1.	Make sure that micro-USB cable(s) is(are) connected between the board and the PC. Change the boot mode to JTAG. Turn ON the power of the board.
-1. Open a serial communication utility for the COM port assigned on your system. The Vitis software platform provides a serial terminal utility will be used throughout the tutorial. You can also use your preferred serial terminal application.
-   * To open this utility, select **Window > Show view**.
-   * In the Show View dialog box, type **terminal** in the search box.
-   * Select **Vitis Serial Terminal** and click **Open**.
+1. Đảm bảo rằng dây micro-USB được kết nốt vào bo mạch và máy tính PC. Chuyển chế độ boot sang JTAG. Cấp nguồn cho bo mạch.
+
+1. Mở tiện ích truyền thông nối tiếp cho cổng COM tương ứng với hệ thống của bạn. Nền tảng phần mềm Vitis cung cấp cửa sổ tiện ích **terminal** nối tiếp. Tính năng này sẽ được dùng trong suốt quá trình hướng dẫn. Bạn có thể chọn ứng dụng khác có tính năng tương tự nếu bạn muốn.
+   * Để mở tiện ích này, chọn **Window > Show view**.
+   * Trong mục **Show View**, điền **terminal** trong thanh tìm kiếm.
+   * Chọn **Vitis Serial Terminal** và bấm **Open**.
     <p align="center">
     <img src ="pics/lab1/15_OpenVitisTerminal.jpg" width="35%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Open the Vitis Serial Terminal </i>
+    <i> Mở cửa sổ Vitis Serial Terminal </i>
     </p>
- 
-1. Click the Add button in the Vitis Serial Terminal to connect to a serial terminal. Select the port from the dropdown menu. Keep the Advanced Settings as-is. Click OK.
-   <p align="center">
+   
+1. Bấm vào nút **Add** trong cửa sổ **Vitis Serial Terminal** để tạo một terminal mới. Chọn cổng phù hợp. Giữ các cấu hình nâng cao. Chọn **OK**.
+	<p align="center">
     <img src ="pics/lab1/16_ConnectSerial.jpg" width="35%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Connect to serial port </i>
+    <i> Kết nối cổng nối tiếp </i>
     </p>
 
-1. Right-click **lab1_system > lab1** and select **Launch Hardware (Single Application Debug)**.
+1. Chuột phải **lab1_system > lab1** và chọn **Launch Hardware (Single Application Debug)**.
     <p align="center">
     <img src ="pics/lab1/17_OpenRunConfig.jpg" width="90%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Launch Run Configurations </i>
+    <i> Khởi chạy Run Configuration </i>
     </p>
 
-1. You should see the following output on the Terminal tab.
+1. Bạn sẽ thấy các thông tin sau trong thanh Terminal.
     <p align="center">
     <img src ="pics/lab1/19_MemTestRun.jpg" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Connect to serial port </i>
+    <i> Kết nối cổng nối tiếp </i>
     </p>
 
-1. Close Vivado and Vitis IDE by selecting **File > Exit** in each program.
+1. Đóng Vivado và Vitis IDE bằng cách chọn **File > Exit** trong từng chương trình.
 
-## Conclusion
+### Kết luận
 
-Vivado and the IP Integrator allow base embedded processor systems and applications to be generated very quickly. After the system has been defined, the hardware can be exported and Vitis IDE can be invoked from Vivado.
+Vivado và IP Integrator cho phép các hệ thống vi xử lý cơ bản và ứng dụng được tạo ra một cách nhanh chóng. Sau khi hệ thống được cấu hình, phần cứng có thể được trích xuất và Vitis IDE sẽ được mở từ Vivado.
 
-Software development is done in Vitis IDE which provides several application templates including memory tests.  You verified the operation of the hardware by using a test application, executing on the processor, and observing the output in the serial terminal window.
+Phát triển phần mềm sẽ được thực hiện trong Vitis IDE. Vitis cung cấp một số ứng dụng mẫu bao gồm cả kiểm tra bộ nhớ. Bạn có thể kiểm tra hoạt động của phần cứng bằng cách dùng ứng dụng kiểm thử, thực thi trên vi xử lý, và quan sát kết quả đầu ra trong của sổ terminal.

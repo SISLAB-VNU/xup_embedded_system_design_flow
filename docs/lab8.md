@@ -1,364 +1,370 @@
-# Configuration and Booting
+# Cấu hình và khởi động
 
-## Objectives
+## Mục tiêu
 
-After completing this lab, you will be able to:
+Sau khi hoàn thành bài thực hành này bạn sẽ có thể:
 
-* Create a bootable system capable of booting from the SD card.
-* Create a bootable system capable of booting from the QSPI flash.
-* Load the bitstream stored on the SD card or in the QSPI flash memory.
-* Configure the PL section using the stored bitstream through the PCAP resource.
-* Execute the corresponding application.
+* Tạo mới một hệ thống có khả năng khởi động từ thẻ nhớ SD.
+* Tạo mới một hệ thống có khả năng khởi động từ bộ nhớ QSPI Flash trên bo mạch.
+* Nạp các bitstream được lưu trên thẻ SD hoặc trong bộ nhớ flash QSPI.
+* Cấu hình phần PL sử dụng bitstream được lưu trữ thông qua tài nguyên PCAP.
+* Thực thi các ứng dụng tương ứng.
 
-## Steps
-## Create a Vivado Project
-1. Open Vivado and click **Create New Project** and click **Next**.
-1. Click the Browse button of the _Project Location_ field of the **New Project** form, browse to **{labs}** , and click **Select**.
-1. Enter **lab8** in the _Project Name_ field.  Make sure that the _Create Project Subdirectory_ box is checked.  Click **Next**.
-1. Select the **RTL Project** option and uncheck the **Do not specify sources at this time** option, click **Next**.
-1. Select **Verilog** as the _Target Language_ in the _Add Sources_ form, and click **Next**.
-1. Click **Next** to escape adding constraints.
-1. Search and select **pynq-z2** board under _board_ tag, click **Next**.
-1. Click **Finish** to create an empty Vivado project.
+## Các bước thực hiện
+## Tạo dự án Vivado
 
-## Creating the Hardware System Using IP Integrator
-### Create a block design to generate the ARM Cortex-A9 processor based hardware system.
-1. In the Flow Navigator, click **Create Block Design** under IP Integrator.
-1. Name the block **system** and click **OK**.
-1. Click the **Add** button or **right clicking on the Diagram window > Add IP** and search for **zynq** in the catalog.
-1. Double click on **ZYNQ7 Processing System** entry to add it to the design.
-1. Click on **Run Block Automation** in the message at the top of the _Diagram_ panel. Leave the default option of _Apply Board Preset_ checked, and click **OK**.
-1. Double click on the Zynq block to open the _Customization_ window.
+1. Mở Vivado và chọn **Create New Project** và chọn **Next**.
+2. Chọn nút Browse ở trường *Project Location* trong **New Project** form, duyệt đến **{labs}**, chọn **Select**.
+3. Nhập **lab8** vào trường *Project Name*. Hãy đảm bảo rằng ô *Create Project Subdirectory* đã được chọn. Chọn **Next**.
+4. Chọn tùy chọn **RTL Project** và bỏ chọn **Do not specify sources at this time**, chọn **Next**.
+5. Chọn **Verilog** cho phần *Target language* ở phần *Add source*, ấn **Next**.
+6. Chọn **Next** để bỏ qua phần thêm ràng buộc.
+7. Tìm và chọn bo mạch **pynq-z2** dưới thẻ *board*, ấn **Next**.
+8. Ấn **Finish** để tạo một dự án Vivado trống.
 
-    >A block diagram of the Zynq should now be open, showing various configurable blocks of the Processing System.
+## Tạo hệ thống phần cứng dùng bộ tích hợp IP (IP Integrator)
+### Tạo một khối thiết kế để tạo ra hệ thống phần cứng dựa trên bộ xử lý ARM Cortex-A9
+1. Trong Flow Navigator, ấn chọn **Create Block Design** dưới phần IP Integrator
+2. Đặt tên khối là **system** và ấn **OK**.
+3. Ấn chọn nút **Add** hoặc **chuột phải vào cửa sổ Diagram > Add IP** và tìm **zynq** trong danh mục.
+4. Nhấn đúp vào mục **ZYNQ7 Processing System** để thêm nó vào thiết kế.  
+5. Chọn **Run Block Automation** ở phần thông báo đầu bảng điều khiển *Diagram*. Giữ tùy chọn mặc định *Apply Board Preset*, và ấn **OK**.
+6. Nhấn đúp vào khối Zynq để mở cửa sổ tùy chỉnh. 
 
-### Configure the I/O Peripherals block to only have QSPI, UART 0, and SD 0 support.
-1. Click on **MIO Configuration** on the left.
-1. Expand the **IO Peripherals** on the right, uncheck _ENET 0_, _USB 0_, and _GPIO &gt; GPIO MIO,_ leaving _UART 0_ and _SD 0_ selected.
-1. Click **OK**. The configuration form will close and the block diagram will be updated.
+   >Sơ đồ khối của Zynq sẽ hiện ra, hiển thị các khối cấu hình khác nhau của Hệ thống xử lý.
+   
+### Cấu hình khối Ngoại vi I/O chỉ hỗ trợ QSPI, UART 0 và SD 0.
+1. Chọn mục **MIO Configuration** ở phía bên trái cửa sổ.
+2. Mở rộng phần **I/O Peripherals** và *bỏ chọn ENET 0, USB 0, và GPIO > GPIO MIO*, chỉ để lại *UART 0* và *SD 0* được chọn.
+3. Ấn **OK**. Cửa sổ phần cấu hình sẽ đóng lại và sơ đồ khối sẽ được cập nhật.
+4. Sử dụng wiring tool, kết nối FCLK_CLK0 với M_AXI_GP0_ACLK.
+5. Chọn tab *Diagram*, ấn **Validate Design (F6)** để đảm bảo không có lỗi gì xảy ra.
 
-1. Using wiring tool, connect **FCLK\_CLK0** to **M\_AXI\_GP0\_ACLK**.
-1. Select the _Diagram_ tab, and click on the **Validate Design (F6)** button to make sure that there are no errors.
+## Xuất thiết kế sang Vitis IDE và tạo các dự án phần mềm
+### Tạo HDL top-level của hệ thống nhúng và tạo bitstream
+1. Trong Vivado, chọn tab *Sources*, mở rộng *Design Sources*, chuột phải vào *system.bd*, chọn **Create HDL Wrapper** và chọn **OK**.
+2. Nhấp vào **Generate Bitstream** và ấn **Generate**. Ấn **Save** để lưu dự án, chọn **Yes** nếu được nhắc chạy các quy trình. Ấn **OK** để khởi chạy các quy trình.
+3. Khi quá trình tạo các bitstream được hoàn tất thành công. Ấn **Cancel**.
 
-## Export the Design to Vitis IDE and create the software projects        
-### Create the top-level HDL of the embedded system, and generate the bitstream.
-1. In Vivado, select the _Sources tab_, expand the _Design Sources,_ right-click the _system.bd_ and select **Create HDL Wrapper** and click **OK.**
-1. Click on **Generate Bitstream** and click **Generate**. Click **Save** to save the project, and **Yes** if prompted to run the processes. Click **OK** to launch the runs.
-1. When the bitstream generation process has completed successfully, click **Cancel**.
+### Xuất thiết kế sang Vitis IDE và tạo ứng dụng Hello World
+1. Xuất cấu hình phần cứng bằng cách nhấp chọn **File > Export > Export Hardware….**
+2. Nhấn chọn ô *Include Bitstream*, và chọn **OK**.
+3. Khởi động Vitis IDE bằng cách chọn **Tools > Launch VITIS IDE** và chọn **OK**.
+4. Trong Vitis IDE, chọn **File > New > Application Project**. 
+5. Trong cửa sổ *Platform*, chọn tag **Create a new platform from hardware (XSA)**, chọn file **.xsa** đã xuất lúc trước. Đặt *Platform name* là **lab8_platform**. Ấn **Next**.
+6. Trong cửa sổ *Application Project Details*, đặt **lab8helloworld là *Application project name***. Ấn **Next**.
+7. Trong cửa số *Domain*, giữ các tùy chọn mặc định, chọn **Next**.
+8. Trong cửa sổ *Templates*, chọn **Hello World** và ấn **Finish**.
+9. Mở rộng **lab8platform trong Explorer, nhấn đúp vào platform.spr** để mở dự án platform.
+10. Ở phía bên trái bảng điều khiển, nhấn chọn **Board Support Package**, và chọn **Modify BSP Settings...** ở bên phải.
+11. Nhấp chọn ô **xilff** và ấn **OK**.
+	<p align="center">
+	<img src = "./pics/lab8/1_EnableXilffs.png" width="80%" height="80%"/>
+	</p>
+	<p align="center">
+	<i>Chọn xilffs trong BSP</i>
+	</p>
 
-### Export the design to Vitis IDE   and create the Hello World application.
-1. Export the hardware configuration by clicking **File &gt; Export &gt; Export Hardware…**.
-1. Click the box to _Include Bitstream_, then click **OK**.
-1. Launch Vitis IDE by clicking **Tools &gt; Launch VITIS IDE** and click **OK**.
-1. In Vitis IDE, select **File** &gt; **New** &gt; **Application Project.**
-1. In the _Platform_ window, click on the tag **Create a new platform from hardware (XSA)** and browse to select the exported **.xsa** file. Enter **lab8_platform** as the _Platform name_. Click **Next**.
-1. In the _Application Project Details_ window, enter **lab8_helloworld** as the _Application project name_. Click **Next**.
-1. In the _Domain_ window, leave the settings as defaults, and click **Next**.
-1. In the _Templates_ window, select **Hello World** and click **Finish**.
-1. Expand **lab8_platform** in the _Explorer_ view, double-click on **platform.spr** to open the platform project.
-1. On the left panel, click on **Board Support Package**, and click on **Modify BSP Settings...** on the right.
-1. Check the box to include **xilffs** and click **OK**.
-    <p align="center">
-    <img src ="./pics/lab8/1_EnableXilffs.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Include xilffs in BSP</i>
-    </p>
-1. Build the platform project. (Right-click on **lab8_platform** form the _Explorer_ view and select **Build Project** or click on the hammer button).
-1. Build the system project. (Right-click on **lab8_helloworld_system** form the _Explorer_ view and select **Build Project** or click on the hammer button).
+12. Tạo platform project. (Chuột phải vào **lab8platform trong Explorer và chọn Build Project** hoặc nhấp vào nút có biểu tượng cái búa).
+13. Tạo system project. (Chuột phải vào **lab8helloworld_system Explorer view và chọn Build Project** hoặc nhấp vào nút có biểu tượng cái búa).
 
+### Tạo trình tải khởi động đầu tiên - FSBL (First Stage Boot Loader)
+1. Chọn **File > New > Application Project**.
+2. Trong cửa sổ *Platform*, chọn tag **Select a platform from repository** và chọn **lab8_platform**. Chọn **Next**.
+3. Trong cửa sổ *Application Project Details*, đặt *Application project name* là **zynq_fsbl** . Ấn **Next**.
+4. Tiếp tục ấn **Next**.
+5. Trong cửa sổ *Templates*, chọn **Zynq FSBL** và ấn **Finish**.
+6. Xây dựng dự án FSBL bằng cách chuột phải vào **zynq_fsbl_system** trong *Explorer* và chọn **Build Project**.
 
-### Create a first stage bootloader (FSBL).
-1. Select **File** &gt; **New** &gt; **Application Project.**
-1. In the _Platform_ window, click on the tag **Select a platform from repository** and select **lab8_platform**. Click **Next**.
-1. In the _Application Project Details_ window, enter **zynq_fsbl** as the _Application project name_. Click **Next**.
-1. Click **Next** again.
-1. In the _Templates_ window, select **Zynq FSBL** and click **Finish**.
-1. Build the FSBL project by Right-clicking on **zynq_fsbl_system** form the _Explorer_ view and select **Build Project** or clicking on the hammer button.
+   > Một dự án zynq_fsbl sẽ được tạo ra và sẽ được sử dụng để tạo file BOOT.bin. File BOOT.bin sẽ được lưu trong SD card và sẽ được sử dụng để khởi động bo mạch.
+   
+## Tao Boot Image và Kiểm tra
+### Tạo file BOOT.bin
+1. Dùng System Explorer, tạo mới thư mục **image** trong thư mục **{labs}\lab8**.
+2. Trong Vitis IDE, chọn **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
+3. Chọn **Create new BIF file**.
+4. Ấn nút Browse ở trường **Output BIF file path**, duyệt đến thư mục **{labs}\lab8\image** và chọn **Save** (giữ tên mặc định là output.bif).
+5. Ấn nút **Add** ở phần *Boot image partitions*, ấn Browse ở trường *File path*, duyệt đến thư mục **{Vitis_Workspace}\zynq_fsbl\Debug** (nơi FSBL được tạo), chọn **zynq_fsbl.elf** và nhấp vào **Open**.
+6. Đảm bảo loại phân vùng (partition type) là **bootloader** và ấn **OK**.
 
-    >A zynq\_fsbl project will be created which will be used in creating the BOOT.bin file.  The BOOT.bin file will be stored on the SD card which will be used to boot the board.
+	<p align="center">
+	<img src ="./pics/lab8/2_AddPartition.png" width="80%" height="80%"/>
+	</p>
+	<p align="center">
+	<i>Thêm các phân vùng FSBL</i>
+	</p>
 
-## Create the Boot Images and Test
-### Create the BOOT.bin file
-1. Using the System Explorer, create a directory under the **{labs}\lab8** directory and name it **image**.
-1. In Vitis IDE, select **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
-1. Select **Create new BIF file**
-1. Click on the Browse button of the **Output BIF file path** field, browse to **{labs}\lab8\image** and click **Save** (leaving the default name of output.bif)
-1. Click on the **Add** button of the _Boot image partitions,_ click the Browse button in the _File path_ field, browse to **{Vitis_Workspace}\zynq_fsbl\Debug** directory (this is where the FSBL was created), select **zynq\_fsbl.elf** and click **Open**.
-1. Make sure the partition type is bootloader, then click **OK.**
-    <p align="center">
-    <img src ="./pics/lab8/2_AddPartition.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Adding FSBL partition</i>
-    </p>
-1. Click on the **Add** button of the _Boot image partitions_ and add the bitstream, **system\_wrapper.bit** , from **{Vitis_Workspace}\lab8_platform\hw** and click **OK**.
-1. Click on the **Add** button of the _Boot image partitions_ and add the software application, **lab8_helloworld.elf** , from **{Vitis_Workspace}\lab8_helloworld\Debug** and click **OK**.
-1. Click the **Create Image** button.
+7. Nhấp vào nút **Add** ở phần *Boot image partitions* và thêm bitstream **system_wrapper.bit** từ thư mục **{Vitis_Workspace}\lab8_platform\hw** và nhấp **OK**.
+8. Nhấp vào nút **Add** ở phần *Boot image partitions* và thêm software application **lab8_helloworld.elf** từ thư mục **{Vitis_Workspace}\lab8_helloworld\Debug** và chọn **OK**.
+9. Chọn **Create Image**. 
 
-    >The BOOT.bin and the output.bif files will be created in the **{labs}\lab5\image** directory.  We will use the BOOT.bin for the SD card boot up.
+    > File BOOT.bin sẽ được tạo ở thư mục **{labs}lab8\SD_image**. File này sẽ được sử dụng cho việc khởi động từ thẻ nhớ SD.
 
-    <p align="center">
-    <img src ="./pics/lab8/3_CreateImage.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Creating BOOT.bin image file</i>
-    </p>
-1. Insert a blank MicroSD card (**FAT32** formatted) in a Card reader, and copy the **BOOT.bin** file from the **image** folder into the MicroSD card.
+	<p align="center">
+	<img src ="./pics/lab8/3_CreateImage.png" width="80%" height="80%"/>
+	</p>
+	<p align="center">
+	<i>Tạo file ảnh BOOT.bin</i>
+	</p>
 
-### Test the functionality by booting from SD card.
-1. Insert the MicroSD card into the board.
-1. Set the board to SD card boot mode and power ON the board.
-1. Connect your PC to the UART port with the provided micro-USB cable, and start Vitis Serial Terminal or other Terminal emulator programs setting it to the current COM port and 115200 baudrate.
-1. You should see the **Hello World** message in the terminal window.  If you don&#39;t see it, then press the **RST/SRST** button on the board.
-1. Once satisfied, power OFF the board and remove the SD card.
+10. Chèn một thẻ nhớ MicroSD trống (định dạng **FAT32**) vào một thiết bị đọc thẻ, và sao chép tệp BOOT.bin từ thư mục hình ảnh vào thẻ nhớ MicroSD.
 
-### Test the functionality by booting from QSPI flash.
-1. Set the board to JTAG mode and power ON the board.
-1. Select **Xilinx > Program Flash**.
-1. Click the **Browse** button of the Image File field, browse to the **{labs}\lab8\image** directory, select **BOOT.bin** file, and click **Open**.
-1. Click the **Browse** button of the Init File field, browse to the **{Vitis_Workspace}\zynq_fsbl\Debug** directory, select **zynq_fsbl.elf** file, and click **Open**.
-1. In the _Offset_ field enter **0** as the offset and click the **Program** button.
+### Kiểm tra chức năng bằng cách khởi động từ thẻ SD
+1. Đặt thẻ MicroSD vào bo mạch. 
+2. Đặt bo mạch sang chế độ khởi động từ thẻ SD, bật nguồn.
+3. Kết nối PC với cổng UART bằng cáp micro-USB và sử dụng Vitis Serial Terminal hoặc các Terminal khác với cổng COM hiện tại và tốc độ baud là 115200.
+4. Bạn sẽ thấy thông điệp **Hello World** xuất hiện trên cửa sổ terminal. Nếu không thấy, nhấn nút **RST/SRST** trên bo mạch.
+5. Khi đã hài lòng, tắt nguồn và lấy thẻ SD ra.
+  
+### Kiểm tra chức năng bằng cách khởi động từ bộ nhớ flash QSPI
+1. Đặt bo mạch sang chế độ JTAG, bật nguồn.
+2. Chọn **Xilinx > Program Flash.**
+3. Ấn nút **Browse** ở trường Image File, duyệt đến thư mục **{labs}\lab8\image**, chọn file **BOOT.bin** và ấn **Open**.
+4. Ấn nút **Browse** ở trường Init File, duyệt đến thư mục **{Vitis_Workspace}\zynq_fsbl\Debug**, chọn file **zynq_fsbl.elf** và chọn **Open**.
+5. Cài đặt offset là 0 ở trường *Offset* và nhấp vào nút **Program**.
 
-    <p align="center">
-    <img src ="./pics/lab8/4_ProgramFlash.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Program Flash Memory form</i>
-    </p>
+	<p align="center">
+	<img src ="./pics/lab8/4_ProgramFlash.png" width="80%" height="80%"/>
+	</p>
+	<p align="center">
+	<i>Định dạng Program Flash Memory</i>
+	</p>
 
-1. Power OFF the board, change the board to QSPI mode, and Power On the board
-1. Disconnect and reconnect the Terminal window.
-1. Press the **RST\SRST** to see the "Hello World" message in the terminal window.
-1. Once satisfied, power OFF the board.
-## Prepare for the Multi-Applications Boot Using SD Card        
->The lab1 and lab2 executable files are required in the .bin format before copying to the SD card. The area in memory allocated for each application need to be modified so that they do not overlap each other, or with the main application. The prepared bin files (**lab1elf.bin** and **lab2elf.bin**) provided in the directory: **{sources}\lab8\SD_image** can be used for copying to the SD card. Follow steps in **Appendix A-1** and **Appendix A-2** if you want to generate by yourself.
+6. Tắt nguồn bo mạch, chuyển bo mạch sang chế độ QSPI và bật nguồn.
+7. Ngắt kết nối và kết nối lại cửa sổ Terminal.
+8. Nhấn **RST\SRST** để thấy thông điệp **Hello World** ở cửa sổ Terminal.
+9. Khi đã hài lòng, tắt nguồn bo mạch.
 
-### Create the lab8\_sd application
-1. Select **File** &gt; **New** &gt; **Application Project.**
-1. In the _Plarform_ window, click the tag **Select a platform from repository** and select **lab8_platform**
-1. Enter **lab8\_sd** as the project name, click **Next**.
-1. Select **standalone_ps7_cortexa9_0** as the domain. Click **Next**.
-1. Select **Empty Application (C)** in the _Templates_ window and click **Finish**.
-1. Expand **lab8_sd_system > lab8_sd** in the project view and right-click in the **src** folder and select **Import Sources...**
-1.  Browse to select the **{sources}\lab8** folder, click Open Folder.
-1.	Select **lab8_sd.c, devcfg.c, devcfg,h, load_elf.s**, click **Finish** to add these files to the project.
-1. Change, if necessary, **LAB1\_ELFBINFILE\_LEN**, **LAB1\_ELFBINFILE\_LEN**, **LAB2\_ELF\_EXEC\_ADDR**, **LAB2\_ELF\_EXEC\_ADDR** values and save the file.
-1. Build the project.
+## Chuẩn bị cho việc khởi động đa ứng dụng từ thẻ SD
+  >Các file thực thi lab1 và lab2 cần ở định dạng .bin trước khi sao chép vào thẻ SD. Khu vực bộ nhớ được cấp phát cho mỗi ứng dụng cần được chỉnh sửa để chúng không chồng chéo lên nhau hoặc chồng chéo với ứng dụng chính. Có thể sử dụng các file bin (**lab1elf.bin** và **lab2elf.bin**) được cung cấp trong thư mục **{sources}\lab8\SD_image** để sao chép vào thẻ SD. Làm theo các bước trong **Phụ lục A-1** và **Phụ lục A-2** nếu bạn muốn tự tạo các file đó. 
 
-## Create the SD Card Image and Test
-### Create the bin files from lab1 and lab2.
-1. Using the System Explorer, create directory called **SD\_image** under the **{labs}\lab8** directory.
-1. In System Explorer, copy the **system\_wrapper.bit** of the lab1 project into the **SD\_image** directory and rename it **lab1.bit**, and do similar for lab2
+### Tạo ứng dụng lab8_sd
+1. Chọn **File > New > Application Project.**
+2. Ở cửa sổ **Platform**, nhấp vào tag **Select a platform from repository** và chọn **lab8_platform**.
+3. Đặt tên dự án là **lab8_sd**, ấn **Next**.
+4. Chọn miền **standalone_ps7_cortexa9_0**. Ấn **Next**.
+5. Chọn **Empty Application (C)** ở cửa sổ *Templates* và ấn **Finish**.
+6. Mở **lab8_sd_system > lab8_sd**, chuột phải vào thư mục **src** và chọn **Import Sources…**
+7. Duyệt để chọn thư mục **{sources}\lab8**, nhấp Open Folder.
+8. Chọn các file **lab8_sd.c, devcfg.c, devcfg,h, load_elf.s**, ấn **Finish** để thêm các file này vào dự án.
+9. Thay đổi (nếu cần) các giá trị **LAB1_ELFBINFILE_LEN, LAB1_ELFBINFILE_LEN, LAB2_ELF_EXEC_ADDR, LAB2_ELF_EXEC_ADDR** và lưu tệp. 
+10. Xây dựng dự án (Build project).
 
-    **{labs}/lab1/lab1.runs/impl\_1/system\_wrapper.bit -&gt; SD\_image/lab1.bit**
+## Tạo ảnh thẻ SD và kiểm tra
+### Tạo các file bin từ lab1 và lab2
+1. Dùng System Explorer, tạo thư mục có tên là **SD_image** dưới thư mục **{labs}\lab8**.
+2. Trong System Explorer, sao chép tệp **system_wrapper.bit** của dự án lab1 vào thư mục **SD_image** và đổi tên thành **lab1.bit**, làm tương tự cho lab2.
+   
+   **{labs}/lab1/lab1.runs/impl_1/system_wrapper.bit -> SD_image/lab1.bit** 
 
-    **{labs}/lab2/lab2.runs/impl\_1/system\_wrapper.bit -&gt; SD\_image/lab2.bit**
-
-    >The _bootgen_ command of Vitis Shell will be used to convert the bit files into the required binary format. The _bootgen_ requires a .bif file which has been provided in the sources/lab8 directory. The .bif file specifies the target .bit files.
-
-1. Open a command prompt by selecting **Xilinx &gt; Vitis Shell.**
-1. In the command prompt window, change the directory to the bitstreams directory using _cd_ command.
-    ```bash
+   **{labs}/lab2/lab2.runs/impl_1/system_wrapper.bit -> SD_image/lab2.bit**
+   
+   >Lệnh bootgen của Vitis Shell sẽ được sử dụng để chuyển đổi các tệp bit thành định dạng nhị phân được yêu cầu. Bootgen yêu cầu một tệp .bif đã được cung cấp trong thư mục sources/lab8. Tệp .bif chỉ định các tệp .bit mục tiêu.
+   
+3. Mở cửa sổ dòng lệnh bằng cách chọn **Xilinx > Vitis Shell**.
+4. Trong cửa sổ dòng lệnh, chuyển đến thư mục bitstreams bằng lệnh cd.
+    ```bash 
     cd {labs}/lab8/SD_image
     ```
-1. Generate the partial bitstream files in the BIN format using the provided ".bif" files located in the _{sources}_ directory. Use the following command:
+5. Tạo các tệp bitstream từng phần ở định dạng BIN sử dụng các tệp “.bif” nằm trong thư mục *{sources}*. Sử dụng các câu lệnh sau:
     ```bash
     bootgen -image {sources}/lab8/lab1_bit_files.bif -w -process\_bitstream bin
     ```
     ```bash
     bootgen -image {sources}/lab8/lab2_bit_files.bif -w -process\_bitstream bin
     ```
-1. Rename the files **lab1.bit.bin** and **lab2.bit.bin** to **lab1.bin** and **lab2.bin**
-1. The size of the file needs to match the size specified in the **lab8\_sd.c** file. The size can be determined by checking the file&#39;s properties. If the sizes do not match, then make the necessary change to the source code and save it (The values are defined as **LAB1\_BITFILE\_LEN** and **LAB2\_BITFILE\_LEN**).
+6. Đổi tên các tệp **lab1.bit.bin** và **lab2.bit.bin** thành **lab1.bin** và **lab2.bin**.
+7. Kích thước của tệp cần phải khớp với kích thước được chỉ định trong tệp **lab8_sd.c**. Kích thước này có thể xác định bằng cách kiểm tra phần các thuộc tính của tệp. Nếu kích thước không khớp, thay đổi mã nguồn và lưu lại (Các giá trị được định nghĩa là **LAB1_BITFILE_LEN** và **LAB2_BITFILE_LEN**).
 
-    <p align="center">
-    <img src ="./pics/lab8/5_FileSize.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Checking the size of the generate bin file</i>
-    </p>
+   <p align="center">
+   <img src ="./pics/lab8/5_FileSize.png" width="80%" height="80%"/>
+   </p>
+   <p align="center">
+   <i>Kiểm tra kích thước của tệp bin được tạo</i>
+   </p>
+   
+   >Lưu ý rằng các tệp lab1.bin và lab2.bin phải có cùng kích thước.
 
-    >Note that the lab1.bin and lab2.bin files should be the same size.
+### Tạo tệp BOOT.bin
+1. Trong SDK,  chọn **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
+2. Chọn **Create new BIF file**.
+3. Đối với *Output BIF file path*, chọn Browse và duyệt đến thư mục **{labs}\lab8\SD_image** và ấn **Save**.
+4. Nhấp vào nút **Add** ở trường *boot image partitions* và duyệt đến **{Vitis_Workspace}/lab8_platform/zynq_fsbl**, chọn **fsbl.elf**, nhấp **Open** và nhấp **OK**.
+5. Nhấp vào nút **Add** ở trường *boot image partitions* và duyệt đến **{Vitis_Workspace}/lab8_platform/hw**, chọn **system_wrapper.bit**, nhấp **Open** và nhấp **OK**.
+6. Nhấp vào nút **Add** ở trường *boot image partitions* và duyệt đến **{Vitis_Workspace}/lab8_sd/Debug**, chọn **lab8_sd.elf**, nhấp **Open** và nhấp **OK**. 
+7. Nhấp vào nút **Create Image**.
 
-### Create the BOOT.bin file
-1. In the SDK, select **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
-1. Select **Create new BIF file**.
-1. For the _Output BIF file path_, click on the Browse button and browse to **{labs}\lab8\SD_image** directory and click **Save**.
-1. Click on the **Add** button of the _boot image partitions_ field and browse to **{Vitis_Workspace}/lab8_platform/zynq_fsbl** , select **fsbl.elf** , click **Open** , and click **OK**.
-1. Click on the **Add** button of the _boot image partitions_ field and browse to **{Vitis_Workspace}/lab8_platform/hw** , select **system_wrapper.bit** , click **Open** , and click **OK**.
-1. Click on the **Add** button of the _boot image partitions_ field and browse to **{Vitis_Workspace}/lab8_sd/Debug** , select **lab8_sd.elf** , click **Open** , and click **OK**.
-1. Click the **Create Image** button.
+    >Tệp BOOT.bin sẽ được tạo trong thư mục **{labs}lab8\SD_image**.
 
-    >The BOOT.bin file will be created in the **{labs}lab8\SD_image** directory.
+### Kiểm tra chức năng thiết kế bằng cách khởi động từ thẻ SD
+1. Trong Windows explorer, sao chép các tệp **lab1elf.bin** và **lab2elf.bin** từ thư mục **{sources}\lab8\SD_image** hoặc từ các thư mục cá nhân (nếu bạn đã thực hiện các phần tùy chọn trong bước trước) và đặt chúng vào thư mục **{labs}\lab8\SD_image**.
+   
+   **{Vitis_Workspace}\lab1\Debug\lab1elf.bin -> SD_image**
 
-### Test the design functionality by booting from SD card
-1. In Windows explorer, copy the **lab1elf.bin** and **lab2elf.bin** files either from the **{sources}\lab8\SD_image** directory or from the individual directories (if you did the optional parts in the previous step) and place them in the **{labs}\lab8\SD\_image** directory.
+   **{Vitis_Workspace}\lab2\Debug\lab2elf.bin -> SD_image**
+   
+2. Chèn một thẻ MicroSD trống (được định dạng **FAT32**) vào một đầu đọc thẻ SD, và sử dụng System Explorer, sao chép hai tệp “.bin”, hai tệp “elf.bin” và BOOT.bin từ thư mục **SD_image** vào thẻ SD.
+3. Đặt thẻ SD vào bo mạch, và cài đặt các chân để khởi động bo mạch từ thẻ SD. Kết nối PC của bạn với cổng UART bằng cáp micro-USB được cung cấp.
+4. Bật nguồn cho bo mạch.
+5. Khởi động terminal và làm theo menu. Nhấn nút **RST/SRST** nếu bạn không thấy menu. 
+6. Khi hoàn thành việc kiểm tra một ứng dụng, tắt nguồn bo mạch và kiểm tra chức năng của ứng dụng thứ hai hoặc nhấn nút **RST/SRST** trên bo mạch để hiển thị menu lần nữa. 
+7. Khi hoàn tất, tắt nguồn bo mạch.
 
-    **{Vitis_Workspace}\lab1\Debug\lab1elf.bin -&gt; SD\_image**
+## Tạo ứng dụng và hình ảnh QSPI
+>Các tệp bin đã được chuẩn bị trong thư mục: **{sources}\lab5\QSPI_image** có thể được sử dụng để tạo các file MCS. Xem các bước để tạo các tệp BIN như vậy ở **Phụ lục B-1** và **Phụ lục B-2**.
 
-    **{Vitis_Workspace}\lab2\Debug\lab2elf.bin -&gt; SD\_image**
+### Tạo ứng dụng lab8_qspi
+1. Chọn **File > New > Application Project**.
+2. Trong cửa sổ *Plarform*, nhấp vào thẻ **Select a platform from repository** và chọn **lab8_platform**.
+3. Nhập **lab8_qspi** làm tên dự án, chọn **Next**.
+4. Chọn miền là **standalone_ps7_cortexa9_0**. Chọn **Next**.
+5. Chọn **Empty Application (C)** trong cửa sổ *Templates* và ấn **Finish**.
+6. Mở **lab8_qspi_system > lab8_qspi** và chuột phải vào thư mục **src** và chọn **Import Sources…**
+7. Duyệt để chọn thư mục **{sources}\lab8**, ấn Open Folder.
+8. Chọn **lab8_qspi.c**, chọn **Finish** để thêm nó vào dự án.
+9. Xây dựng dự án.
+    
+### Tạo tệp lab8.mcs
+1. Sử dụng System Explorer, tạo thư mục **QSPI_image** dưới thư mục **lab8**.
+2. Chọn **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
+3. Chọn **Create new BIF file**, nhấp vào nút *Browse* của trường *Output BIF file path* và duyệt đến thư mục **{labs}\lab8\QSPI_image**, để tên mặc định là *output.bif* và chọn **Save**.
+4. Nhấp vào nút **Add** của trường *boot image partitions* và thêm file fsbl, **fsbl.elf**, từ **{Vitis_Workspace}/lab8_platform\zynq_fsbl** và nhấp **OK**.
+5. Nhấp vào nút **Add** của trường *boot image partitions* và thêm file bitstream, **system_wrapper.bit**, từ **{Vitis_Workspace}/lab8_platform\hw** và nhấp **OK**.
+6. Nhấp vào nút **Add** của trường *boot image partitions* và thêm file **lab8_qspi.elf**, từ **{Vitis_Workspace}/lab8_qspi\Debug** và nhấp **OK**.
+7. Nhấp vào nút **Add** của trường *Boot image partition* một lần nữa và thêm **lab1.bin** từ hình ảnh khởi động đã tạo của dự án lab1 (trong **{labs}\lab1**) hoặc từ thư mục **{sources}\lab8\QSPI_image** được cung cấp. Nhập **0x400000** vào trường *Offset* và nhấp **OK**.
+8. Tương tự, thêm **lab2.bin** từ hình ảnh khởi động đã tạo của dự án lab2 (trong **{labs}\lab2**) hoặc từ thư mục **{sources}\lab8\QSPI_image** được cung cấp. Nhập **0x800000** vào trường *Offset* và nhấp **OK**.
+9.  Thay đổi tên tệp đầu ra thành **lab8.mcs** và vị trí tệp thành **lab8\QSPI_image**.
+10. Nhấp vào nút **Create Image**. Tệp lab8.mcs sẽ được tạo trong thư mục **lab8\QSPI_image**.
 
+### Lập trình QSPI bằng tiện ích Flash Writer
+1. Đặt bo mạch ở chế độ JTAG. Bật nguồn cho bo mạch.
+2. Chọn **Xilinx > Program Flash**.
+3. Nhấp vào nút **Browse** của trường *Image File*, và duyệt đến thư mục **{labs}\lab8\QSPI_image**, chọn tệp **lab8.mcs**, và nhấp **Open**.
+      >Sử dụng tệp mcs được cung cấp trong thư mục **{sources}\lab8\QSPI_image** nếu bạn đã bỏ qua bước tạo hình ảnh QSPI trước đó.
+4. Trong trường *Offset*, nhập offset là **0** và nhấp vào nút **Program**. Bộ nhớ flash QSPI sẽ được lập trình. Quá trình này có thể mất đến 4 phút.
 
-1. Insert a blank MicroSD card (**FAT32** formatted) in an SD Card reader, and using the System Explorer, copy the two ".bin" files, the two "elf.bin" files, and BOOT.bin from the **SD\_image** folder in to the SD card.
-1. Place the SD card in the board, and set the mode pins to boot the board from the SD card. Connect your PC to the UART port with the provided micro-USB cable.
-1. Power ON the board.
-1. Start the terminal emulator program and follow the menu. Press the **RST/SRST** button if you don&#39;t see the menu.
-1. When finished testing one application, either power cycle the board and verify the second application&#39;s functionality, or press the **RST/SRST** button on the board to display the menu again.
-1. When done, power OFF the board.
+### Kiểm tra khả năng khởi động đa ứng dụng từ QSPI
+1. Tắt nguồn bo mạch, đổi nó sang chế độ QSPI và bật nguồn cho bo mạch.
+2. Bắt đầu phiên giả lập terminal và nhấn nút **RST/SRST** để xem menu.
+3. Theo dõi menu và kiểm tra chức năng của mỗi lab.
+    
+    >Nhấn 1 để tải và thực thi lab1 hoặc nhấn 2 để tải và thực thi lab2. Quay lại menu bằng cách tắt và bật lại bo mạch.
+4. Khi đã hài lòng, tắt nguồn cho bo mạch.
+5. Đóng Vitis IDE và Vivado 
+  
+## Kết luận
 
-## Create the QSPI application and image 
->The prepared bin files provided in the directory: **{sources}\lab5\QSPI_image** can be used for creating the MCS. **Appendix B-1** and **Appendix B-2** lists the steps of how to create such BIN files.
+Bài thực hành này đã hướng dẫn bạn tạo các hình ảnh khởi động có khả năng khởi động các ứng dụng độc lập từ thẻ SD hoặc bộ nhớ flash QSPI. Sau đó, bạn đã tạo thiết kế có khả năng khởi động nhiều ứng dụng và các cấu hình mà bạn đã phát triển trong các bài thực hành trước đó.
 
-### Create the lab8_qspi application
-1. Select **File** &gt; **New** &gt; **Application Project.**
-1. In the _Plarform_ window, click the tag **Select a platform from repository** and select **lab8_platform**
-1. Enter **lab8_qspi** as the project name, click **Next**.
-1. Select **standalone_ps7_cortexa9_0** as the domain. Click **Next**.
-1. Select **Empty Application (C)** in the _Templates_ window and click **Finish**.
-1. Expand **lab8_qspi_system > lab8_qspi** in the project view and right-click in the **src** folder and select **Import Sources...**
-1.  Browse to select the **{sources}\lab8** folder, click Open Folder.
-1.	Select **lab8_qspi.c**, click **Finish** to add it to the project.
-1. Build the project.
+## Phụ lục A-1
 
+### Sử dụng lệnh objcopy để chuyển đổi tệp elf của lab1 thành tệp nhị phân
 
-### Create the lab8.mcs file
-1. Using the System Explorer, create the **QSPI\_image** directory under the **lab8** directory.
-1. Select **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
-1. Select **Create new BIF file** option, click the _Browse_ button of the _Output BIF file path_ field and browse to **{labs}\lab8\QSPI_image** directory, with default name _output.bif_, and click **Save**.
-1. Click on the **Add** button of the _boot image partitions_ field and add the fsbl file, **fsbl.elf** , from **{Vitis_Workspace}\lab8_platform\zynq_fsbl** and click **OK**
-1. Click on the **Add** button of the _boot image partitions_ field and add the bitstream file, **system_wrapper.bit** , from **{Vitis_Workspace}\lab8_platform\hw** and click **OK**
-1. Click on the **Add** button of the _boot image partitions_ field and add the **lab8_qspi.elf** file , from **{Vitis_Workspace}\lab8_qspi\Debug** and click **OK**
+1. Khởi động Vitis IDE và duyệt đến workspace trỏ đến **lab1_system** và nhấp **OK**.
+2. Chuột phải vào **lab1system > lab1, chọn *Generate Linker Script*, thay đổi các phần *code, data, heap, và stack* để sử dụng *ps7_ddr_0*, và nhấp Generate**.  Ấn **Yes** để ghi đè lên linker script.
+3. Mở rộng **lab1_system > lab1 > src** trong Explorer, và nhấn đúp vào **lscript.ld** để mở nó.
+4. Trong chế độ xem chỉnh sửa lscript, thay đổi Base Address của *ps7_ddr_0_AXI_BASEADDR* từ **0x00100000** thành **0x00200000** và thay đổi Size từ **0x1FF00000** thành **0x1FE00000**.
 
-1. Click on the **Add** button of the _Boot image partition_ field again and add the **lab1.bin** , either from created boot image of the lab1 project (in **{labs}\lab1**) or from the provided **{sources}\lab8\QSPI_image** directory. Enter **0x400000** in the _Offset_ field and click **OK**.
-1. Similarly, add the **lab2.bin** , either from the created boot image of the lab2 project (in **{labs}\lab2**) or from the provided **{sources}\lab8\QSPI_image** directory. Enter **0x800000** in the _Offset_ field and click **OK**.
-1. Change the output filename to **lab8.mcs** and the location to **lab8\QSPI_image**.
-1. Click the **Create Image** button. The lab8.mcs file will be created in the **lab8\QSPI_image** directory.
+	<p align="center">
+	<img src ="./pics/lab8/6_ChangeAddr.png" width="60%" height="80%"/>
+	</p>
+	<p align="center">
+	<i>Thay đổi Base address và Size</i>
+	</p>
 
-### Program the QSPI using the Flash Writer utility.
-1. Set the board in JTAG mode. Power ON the board.
-1. Select **Xilinx > Program Flash**.
-1. Click the **Browse** button of the _Image File_ field, and browse to the **{labs}\lab8\QSPI_image** directory, select **lab8.mcs** file, and click **Open**.
-    >A solution mcs file is provided in the **{sources}\lab8\QSPI_image** directory, use it if you have skipped the previous step of generate QSPI image.
- 
-1. In the _Offset_ field enter **0** as the offset and click the **Program** button. The QSPI flash will be programmed. It may take up to 4 minutes.
+5. Nhấn **Ctrl-S** để lưu thay đổi.
+6. Xây dựng dự án hệ thống (Build project).
+7. Chọn **Xilinx > Vitis Shell** để mở phiên shell.
+8. . Trong cửa sổ shell, chuyển đến thư mục **{Vitis_Workspace}\lab1\Debug** bằng lệnh **cd**.
+9. Chuyển đổi tệp lab1.elf thành tệp lab1elf.bin bằng cách gõ lệnh sau.
 
-### Test the QSPI Multi-Applications
-1. Power OFF the board and change it to QSPI mode, and power ON the board.      
-1. Start the terminal emulator session and press **RST/SRST** button to see the menu.
-1. Follow the menu and test the functionality of each lab.
-
-    > Press 1 to load and execute lab2 or press 2 to load and execute lab2. Return to the menu by returning the board OFF and ON.
-
-1. Once satisfied, power OFF the board.
-1. Close Vitis IDE and Vivado
-
-## Conclusion
-
-This lab led you through creating the boot images which can boot standalone applications from either the SD card or the QSPI flash memory.  You then created the design capable of booting multiple applications and configurations which you developed in the previous labs.
-
-## Appendix A-1
-### Use objcopy command to convert the elf file of lab1 into the binary file
-1. Start the Vitis IDE and browse to the workspace pointing to **lab1_system** and click **OK.**
-1. Right-click on the **lab1_system > lab1** project, select the _Generate Linker Script_ option, change the _code, data, heap, and stack_ sections to use the _ps7\_ddr\_0_, and click **Generate**. Click **Yes** to overwrite the linker script.
-1. Expand the **lab1_system > lab1 > src** entry in the Explorer, and double-click on the **lscript.ld** to open it.
-1. In the lscript editor view, change the Base Address of the _ps7\_ddr\_0\_AXI\_BASEADDR_ from **0x00100000** to **0x00200000** , and the Size from **0x1FF00000** to **0x1FE00000**.
-
-    <p align="center">
-    <img src ="./pics/lab8/6_ChangeAddr.png" width="60%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Changing the Base address and the size</i>
-    </p>
-1. Press **Ctrl-S** to save the change.
-1. Build the system project.
-
-1. Select **Xilinx > Vitis Shell** to open the shell session.
-1. In the shell window, change the directory to **{Vitis_Workspace}\lab1\Debug** using the **cd** command.
-1. Convert the _lab1.elf_ file to _lab1elf.bin_ file by typing the following command.
     ```bash
-     arm-none-eabi-objcopy -O binary lab1.elf lab1elf.bin
-    ```
+    arm-none-eabi-objcopy -O binary lab1.elf lab1elf.bin 
+    ``` 
+	
+10. Gõ `ls –l` trong cửa sổ shell và ghi chú kích thước của tệp. Trong trường hợp này, nó là **32776**, tương đương với **0x8008** byte.
+11. Xác định điểm nhập “main()” của chương trình bằng cách sử dụng lệnh sau trong cửa sổ shell.
 
-1. Type `ls –l` in the shell window and note the size of the file.  In this case, it is **32776** , which is equivalent to **0x8008** bytes.
-1. Determine the entry point "main()" of the program using the following command in the shell window.
-    ```
-    arm-none-eabi-objdump -S lab1.elf | grep "<main>"
-    ```
-    It should be in the **0x0020074C**.
-
-     > Make a note of these two numbers (length and entry point) as they will be used in the lab8_sd application.
-
-1. Close the Shell window.
-
-## Appendix A-2
-### Use objcopy command to convert the elf file of lab2 into the binary file
-1. Start the Vitis IDE and browse to the workspace pointing to **lab2_system** and click **OK.**
-1. Right-click on the **lab2_system > lab2** project, select the _Generate Linker Script_ option, change the _code, data, heap, and stack_ sections to use the _ps7\_ddr\_0_, and click **Generate**. Click **Yes** to overwrite the linker script.
-1. Expand the **lab2_system > lab2 > src** entry in the Explorer, and double-click on the **lscript.ld** to open it.
-1. In the lscript editor view, change the Base Address of the _ps7\_ddr\_0\_AXI\_BASEADDR_ from **0x00100000** to **0x00600000** , and the Size from **0x1FF00000** to **0x1FA00000**.
-
-    <p align="center">
-    <img src ="./pics/lab8/6_ChangeAddr.png" width="60%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Changing the Base address and the size</i>
-    </p>
-1. Press **Ctrl-S** to save the change.
-1. Build the system project.
-
-1. Select **Xilinx > Vitis Shell** to open the shell session.
-1. In the shell window, change the directory to **{Vitis_Workspace}\lab2\Debug** using the **cd** command.
-1. Convert the _lab2.elf_ file to _lab2elf.bin_ file by typing the following command.
     ```bash
-     arm-none-eabi-objcopy -O binary lab2.elf lab2elf.bin
+    arm-none-eabi-objdump -S lab1.elf | grep “<main>”
     ```
+    Nó nên ở trong **0x0020074C**.
+    
+    >Ghi chú hai con số (độ dài và điểm nhập) vì chúng sẽ được sử dụng trong ứng dụng lab8_sd.
 
-1. Type `ls –l` in the shell window and note the size of the file.  In this case, it is **32776** , which is equivalent to **0x8008** bytes.
-1. Determine the entry point "main()" of the program using the following command in the shell window.
+12. Đóng cửa sổ Shell.
+
+## Phụ lục A-2
+### Sử dụng lệnh objcopy để chuyển đổi tệp elf của lab2 thành tệp nhị phân
+
+1. Khởi động Vitis IDE và duyệt đến workspace trỏ đến **lab2_system** và nhấp **OK**.
+2. Chuột phải vào **lab2system > lab2, chọn *Generate Linker Script*, thay đổi các phần *code, data, heap, và stack* để sử dụng *ps7_ddr_0*, và nhấp Generate**.  Ấn **Yes** để ghi đè lên linker script.
+3. Mở rộng **lab2_system > lab2 > src** trong Explorer, và nhấp đúp vào **lscript.ld** để mở nó.
+4. Trong chế độ xem chỉnh sửa lscript, thay đổi Base Address của *ps7_ddr_0_AXI_BASEADDR* từ **0x00100000** thành **0x00600000** và thay đổi Size từ **0x1FF00000** thành **0x1FA00000**.
+
+	<p align="center">
+	<img src ="./pics/lab8/6_ChangeAddr.png" width="60%" height="80%"/>
+	</p>
+	<p align="center">
+	<i>Thay đổi Base address và Size</i>
+	</p>
+
+1. Nhấn **Ctrl-S** để lưu thay đổi.
+2. Xây dựng dự án hệ thống (Build project).
+3. Chọn **Xilinx > Vitis Shell** để mở phiên shell.
+4. Trong cửa sổ shell, chuyển đến thư mục **{Vitis_Workspace}\lab1\Debug** bằng lệnh cd.
+5. Chuyển đổi tệp lab2.elf thành tệp lab2elf.bin bằng cách gõ lệnh sau.
+    ```bash
+    arm-none-eabi-objcopy -O binary lab2.elf lab2elf.bin 
+    ``` 
+	
+6.  Gõ `ls –l` trong cửa sổ shell và ghi chú kích thước của tệp. Trong trường hợp này, nó là **32776**, tương đương với **0x8008** byte.
+7.  Xác định điểm nhập “main()” của chương trình bằng cách sử dụng lệnh sau trong cửa sổ shell.
+    ```bash
+    arm-none-eabi-objdump -S lab2.elf | grep “<main>”
     ```
-    arm-none-eabi-objdump -S lab2.elf | grep "<main>"
-    ```
-    It should be in the **0x00600584**.
+    Nó nên ở trong **0x00600584**.
+    
+    >Ghi chú hai con số (độ dài và điểm nhập) vì chúng sẽ được sử dụng trong ứng dụng lab8_sd.
 
-     > Make a note of these two numbers (length and entry point) as they will be used in the lab8_sd application.
+8.  Đóng cửa sổ Shell.
 
-1. Close the Shell window.
+## Phụ lục B-1
+>Bước này nhằm đưa mã liên quan đến thanh ghi MULTIBOOT vào Lab1. Sau đó chuyển đổi tệp thực thi lab1 thành định dạng (.bin) được yêu cầu.
 
-## Appendix B-1
-> This step bring in MULTIBOOT register related code in Lab1. It then convert the lab1 executable file to the required (.bin) format. 
+1. Khởi động Vitis IDE và duyệt đến workspace trỏ đến **lab1** và nhấp **OK**.
+2. Chuột phải vào mục **lab1**, chọn tùy chọn *C/C++ Build Settings*.
+3. Chọn *Symbols* trong khung bên trái dưới nhóm *ARM gcc compiler*, nhấp vào nút + ở bên phải, nhập **MULTIBOOT** vào form, nhấp **OK** và **OK**.
 
-1. Start Vitis IDE and browse to the workspace pointing to **lab1** and click **OK.**
-1. Right-click on the **lab1** entry, select the _C/C++ Build Settings_ option.
-1. Select _Symbols_ in the left pane under the _ARM gcc compiler_ group, click the _+_ button on the right, enter **MULTIBOOT** in open form, click **OK** and click **OK** again.
-    <p align="center">
-    <img src ="./pics/lab8/7_BuildSetting.png" width="60%" height="80%"/>
+	<p align="center">
+	<img src ="./pics/lab8/7_BuildSetting.png" width="60%" height="80%"/>
+	</p>
+	<p align="center">
+	<i>Thiết lập symbols do người dùng định nghĩa</i>
     </p>
-    <p align = "center">
-    <i>Setting user-defined symbol</i>
-    </p>
-1. Rebuild the system project.
-1. Select **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
-1. Select **Create new BIF file** option, click the _Browse_ button of the _Output BIF file path_ field and browse to **{labs}\lab1** directory, set filename as **lab1**, and click **Save**.
-1. Add below three files in the _Boot image partitions_ field
-    1. {Vitis_Workspace}\lab8_platform\zynq_fsbl\fsbl.elf
-    1. {Vitis_Workspace}\lab1_platform\hw\system_wrapper.bit
-    1. {Vitis_Workspace}\lab1\Debug\lab1.elf
-1. Change the output filename to **lab1.bin** making sure that the output directory is **{labs}\lab1**.
-1. Click the **Create Image** button. The lab1.bin will be created in the lab1 directory.
 
-## Appendix B-2
-> This step bring in MULTIBOOT register related code in Lab2. It then convert the lab1 executable file to the required (.bin) format. 
+4. Xây dựng lại dự án hệ thống (Build project).
+5. Chọn **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
+6. Chọn tùy chọn **Create new BIF file**, nhấp vào nút *Browse* của trường *Output BIF file path* và duyệt đến thư mục **{labs}\lab1**, đặt tên tệp là **lab1**, và nhấp **Save**.
+7. Thêm ba tệp dưới đây vào trường *Boot image partitions*
+   1. {Vitis_Workspace}\lab8_platform\zynq_fsbl\fsbl.elf 
+   2. {Vitis_Workspace}\lab1_platform\hw\system_wrapper.bit 
+   3. {Vitis_Workspace}\lab1\Debug\lab1.elf
+8. Thay đổi tên tệp đầu ra thành **lab1.bin**, đảm bảo rằng thư mục đầu ra là **{labs}\lab1**.
+9. Nhấp vào nút **Create Image**. Tệp lab1.bin sẽ được tạo trong thư mục lab1.
+    
+## Phụ lục B-2
+>Bước này nhằm đưa mã liên quan đến thanh ghi MULTIBOOT vào Lab2. Sau đó chuyển đổi tệp thực thi lab2 thành định dạng (.bin) được yêu cầu.
 
-1. Start Vitis IDE and browse to the workspace pointing to **lab2** and click **OK.**
-1. Right-click on the **lab2** entry, select the _C/C++ Build Settings_ option.
-1. Select _Symbols_ in the left pane under the _ARM gcc compiler_ group, click the _+_ button on the right, enter **MULTIBOOT** in open form, click **OK** and click **OK** again.
-1. Rebuild the system project.
-1. Select **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
-1. Select **Create new BIF file** option, click the _Browse_ button of the _Output BIF file path_ field and browse to **{labs}\lab2** directory, set filename as **lab2**, and click **Save**.
-1. Add below three files in the _Boot image partitions_ field
-    1. {Vitis_Workspace}\lab8_platform\zynq_fsbl\fsbl.elf
-    1. {Vitis_Workspace}\lab2_platform\hw\system_wrapper.bit
-    1. {Vitis_Workspace}\lab2\Debug\lab2.elf
-1. Change the output filename to **lab2.bin** making sure that the output directory is **{labs}\lab2**.
-1. Click the **Create Image** button. The lab2.bin will be created in the lab2 directory.
+1. Khởi động Vitis IDE và duyệt đến workspace trỏ đến **lab2** và nhấp **OK**.
+2. Chuột phải vào mục **lab2**, chọn tùy chọn *C/C++ Build Settings*.
+3. Chọn *Symbols* trong khung bên trái dưới nhóm *ARM gcc compiler*, nhấp vào nút + ở bên phải, nhập **MULTIBOOT** vào form, nhấp **OK** và **OK**.
+4. Xây dựng lại dự án hệ thống (Build project).
+5. Chọn **Xilinx > Create Boot Image > Zynq and Zynq Ultrascale**.
+6. Chọn tùy chọn **Create new BIF file**, nhấp vào nút *Browse* của trường *Output BIF file path* và duyệt đến thư mục **{labs}\lab2**, đặt tên tệp là **lab2**, và nhấp **Save**.
+7. Thêm ba tệp dưới đây vào trường *Boot image partitions*
+   1. {Vitis_Workspace}\lab8_platform\zynq_fsbl\fsbl.elf 
+   2. {Vitis_Workspace}\lab2_platform\hw\system_wrapper.bit 
+   3. {Vitis_Workspace}\lab2\Debug\lab2.elf
+8. Thay đổi tên tệp đầu ra thành **lab2.bin**, đảm bảo rằng thư mục đầu ra là **{labs}\lab2**.
+9. Nhấp vào nút **Create Image**. Tệp lab2.bin sẽ được tạo trong thư mục lab2.

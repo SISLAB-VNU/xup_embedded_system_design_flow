@@ -1,402 +1,422 @@
-# Debugging Using Hardware Analyzer
+# Sửa lỗi bằng Trình phân tích phần cứng
 
-## Objectives 
-After completing this lab, you will be able to:
+## Đối tượng 
+Sau khi hoàn thành lab này bạn có thể:
 
-* Add a VIO core in the design
-* Use a VIO core to inject stimulus to the design and monitor the response
-* Mark nets as debug so AXI transactions can be monitored
-* Add an ILA core in Vivado
-* Perform hardware debugging using the hardware analyzer
-* Perform software debugging using the Vitis IDE
+*   Thêm lõi **VIO** vào trong thiết kế
+*   Sử dụng lõi **VIO** để kích thích thiết kế và theo dõi những phản hồi
+*   Đánh dấu lưới như việc gỡ lỗi để giao thức AXI có thể theo dõi 
+*   Thêm lõi **ILA** vào phần mềm Vivado
+*   Biểu diễn gỡ lỗi phần cứng sử dụng trình phân thích phần cứng 
+*   Biểu diễn phần mềm gỡ lỗi bằng cách sử dụng **Vitis IDE**
 
-## Steps
+## Các bước thực hiện 
 
-## Open the Project
+## Mở Project 
 
-1.  Start Vivado if necessary and open the lab2 project (lab2.xpr) you created in the previous lab
-1.  Select **File > Project > Save As …** to open the Save Project As dialog box. Enter **lab6** as the project name.  Make sure that the **Create Project Subdirectory** option is checked, the project directory path is **{labs}** and click **OK.**
-1. Click **Settings** in the _Flow Navigator_ pane.
-1. Expand **IP** in the left pane of the _Project Settings_ form and select **Repository.**
-1. Click on the _plus_ button of the IP Repositories panel, browse to **{sources}\lab6\math_ip** and click **Select.**
-    The directory will be scanned and one IP will be detected and reported.   
+1. Khởi động **Vivado** nếu cần thiết và mở bài thực hành 2 **(lab2.xpr)** mà bạn đã tạo ra từ bài thực hành trước
+2. Chọn **File > Project > Save As** ... để mở bảng thao tác **Save Project As**. Nhập lab6 là tên bài thực hành. Chắc chắn rằng tùy chỉnh **Create Project Subdirectory** đã được kiểm tra, đường dẫn thư viện bài thực hành là **{labs}** và chọn **OK**
+3. Chọn Settings trong bảng *Flow Navigator* 
+4. Mở rộng IP  ở phía bên trái cửa sổ *Project Settings* và chọn **Repository.**
+5. Chọn nút *plus* trong bảng IP Repositories, tìm đến **{sources}\lab6\math_ip** và chọn **Select**. Thư viện sẽ được quét và một IP sẽ được phát hiện và thông báo.
     <p align="center">
     <img src ="./pics/lab6/1_IPRepo.png" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Specify IP Repository</i>
+    <i>Chỉ định thư mục IP</i>
     </p>
-1. Click **OK** twice to close the window.
+6. Nhấn chọn **OK** 2 lần để đóng cửa sổ.
+   
+## Thêm ví dụ GPIO cho LEDS 
 
-## Add GPIO Instance for LEDs
-1. Click **Open Block Design** in the _Flow Navigator_ pane to open the block diagram.
-1. Add an _AXI GPIO_ IP by **right clicking on the Diagram window > Add IP** and search for AXI GPIO in the catalog, rename it to **leds**.
-1. Double click on the leds block, and select **leds 4bits** for the GPIO interface and click OK.
-1. Click **Run Connection Automation**, and select **leds** (which will include GPIO and S\_AXI). Click on **GPIO** and **S_AXI** to check the default connections for these interfaces.
-1. Click OK to automatically connect the S_AXI interface to the Zynq GP0 port (through the AXI interconnect block), and the GPIO port to an external interface. Rename the port **leds_4bits** to **leds**.
-
-    At this stage the design should look like as shown below. 
+1. Chọn **Open Block Design** trong bảng *Flow Navigator* để mở sơ đồ khối.
+2. Thêm *AXI GPIO IP* bằng cách **Nhấn chuột phải vào cửa sổ Diagram > Add IP** và tìm AXI GPIO ở mục lục, đổi tên nó thành **leds.**
+3. Nhấp chuột hai lần vào khối leds, và chọn **leds 4bits** cho giao diện GPIO và chọn OK.
+4. Chọn **Run Connection Automation**, và chọn **leds** (thứ mà chứa GIPO và S_AXI). Nhấn chọn **GPIO** và **S_AXI** để kiểu tra kết nối mặc định của những giao diện này
+5. Nhấn chọn OK để tự động kết nối giao diện S_AXI với cổng Zynq GP0 (Thông qua khối kết nối AXI), và cổng GPIO đến giao diện bên ngoài. Đổi tên cổng **leds_4bits** thành **leds**.
+   
+   Ở bước này, thiếu kế sẽ trông giống như hình minh họa ở dưới đây.
     <p align="center">
     <img src ="./pics/lab6/2_AddLeds.png" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Block Design After add LED</i>
+    <i>Khối thiết kế sau khi thêm LED</i>
     </p>
 
+## Thêm Custom IP 
 
-## Add the Custom IP
-1. Open the block diagram.
-1. Click the **Plus** button or right click the Diagram window and select **Add IP**, search for **math** in the catalog.
-1. Double-click the **math\_ip\_v1\_0** to add an instance of the core to the design.
-1. Click on **Run Connection Automation**, ensure math\_ip\_0 and S\_AXI are selected, and click **OK.**
+1. Nhấn chọn sơ đồ khối.
+2. Nhấn chọn **Plus** hoặc chuột phải vào cửa sổ Diagram và chọn **Add IP**, tìm kiếm **math** ở phần hồ sơ.
+3. Nhấn chuột hai lần vào **math_ip_v1_0** để thêm phiên bản của lõi cho thiết kế.
+4. Nhấn chọn **Run Connection Automation**, chắc chắn rằng math_ip_0 và S_AXI được chọn, nhấn **OK.**
 
-    The _Math IP_ consists of a hierarchical design with the lower-level module performing the addition. The higher-level module includes the two slave registers.
-    <p align="center">
-    <img src ="./pics/lab6/3_MathIP.png" width="60%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Custom Core's Main Functional Block</i>
-    </p>
+   *Math IP* bao gồm cấu trúc thiết kế phân cấp với bộ phận cấp thấp thể hiện phép cộng. Bộ phận cấp cao bao gồm hai thanh ghi chủ/tớ tớ.
+   <p align="center">
+   <img src ="./pics/lab6/3_MathIP.png" width="60%" height="80%"/>
+   </p>
+   <p align = "center">
+   <i>Khối Chức Năng Chính của Lõi Tùy chỉnh</i>
+   </p>
 
-## Add the ILA and VIO Cores        
+## Thêm lõi ILA và VIO 
 
-We want to connect the ILA core to the LED interface. Vivado prohibits connecting ILA cores to interfaces.  In order to monitor the LED output signals, we need to convert the LED interface to simple output port.
+Chúng ta muốn kết nối lõi ILA với giao diện LED. Vivado ngăn cản việc kết nối lõi ILA với giao diện. Để có thể quan sát LED tín hiệu đầu ra, chúng ta cần phải chuyển đổi giao diện LED thành cổng đầu ra đơn giản.
 
-### Disable LEDs interface.
-1. Double-click the _leds_ instance to open its configuration form.
-1. Click **Clear Board Parameters** and click **OK** to close the configuration form.
-1. Select _leds_ port and delete it.
-1. Expand the _gpio_ interface of the **leds** instance to see the associate ports.
+### Tắt giao diện LEDs.
+1. Nhấp chuột hai lần vào *leds* để mở bảng tùy chỉnh của nó.
+2. Nhấp chọn **Clear Board Parameters** và nhấn **OK** để đóng bảng.
+3. Chọn CỔNG *leds* và xóa nó.
+4. Mở rộng giao diện *gpio* của **leds** để xem các cổng liên kết.
 
-### Make the gpio\_io\_o port of the leds instance external and rename it as _leds_.
-1. Move the mouse close to the end of the _gpio\_io\_o_ port, left-click to select (do not select the main GPIO port), and then right click and select **Make External**.
+### Làm cho cổng gpio\_io\_o của leds ngoại vi và đổi tên nó thành _leds_.
+1. Di chuyển con trỏ chuột đến gần cuối của cổng gpio_io_o, chuột trái để chọn (không chọn cổng GPIO chính), và nhấp chuột phải và chọn **Make External**.
     <p align="center">
     <img src ="./pics/lab6/4_GpioExternal.png" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Make the gpio_io_o port External</i>
-    </p>
-    The port connector named gpio_io_o will be created and connected to the port.
+	<i>Làm cho cổng gpio_io_o ngoại vi</i>
+	</p>
+   
+   Cổng kết nối *gpio_io_o* sẽ được tạo và kết nối.
 
-1. Select the port _gpio\_io\_o_ and change its name to **leds** by typing it in the properties form.
+2. Chọn cổng *gpio_io_o* và đổi tên nó thành **leds** bằng cách gõ nó vào bảng thông tin.
+   
+### Kích hoạt chức năng kích hoạt chéo giữa PL và PS
 
-### Enable cross triggering between the PL and PS
-1. Double click on the _Zynq_ block to open the configuration properties.
-1. Click on **PS-PL Configuration**, and enable the **PS-PL Cross Trigger interface**.
-1. Expand **PS-PL Cross Trigger interface &gt; Input Cross Trigger**, and select **CPU0 DBG REQ** for _Cross Trigger Input 0._
-1. Similarly, expand Output Cross Trigger, and select **CPU0 DBG ACK** for _Cross Trigger Output 0_ and click **OK.**
-    <p align="center">
-    <img src ="./pics/lab6/5_CrossTrigger.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Enabling cross triggering in the Zynq processing system</i>
-    </p>
+1. Nhấp chuột hai lần vào khối *Zynq* để mở tùy chỉnh thông tin.
+2. Nhấp chọn **PS-PL Configuration**, và bật **PS-PL Cross Trigger interface**.
+3. Mở rộng **PS-PL Cross Trigger interface > Input Cross Trigger**, và chọn **CPU0 DBG REQ** cho *Cross Trigger Input 0*.
+4. Tương tự, mở rộng **Output Cross Trigger**, và chọn **CPU0 DBG ACK** cho *Cross Trigger Output 0* và chọn **OK**.
+   <p align="center">
+   <img src ="./pics/lab6/5_CrossTrigger.png" width="80%" height="80%"/>
+   </p>
+   <p align = "center">
+   <i>Bật kích hoạt chéo ở trên hệ thống xử lý Zynq</i>
+   </p>
 
-### Add the ILA core and connect it to the LED output port.
-1. Click the **Plus** button or right click the Diagram window and select **Add IP**, search for **ila** in the catalog.
-1. Double-click on the **ILA (Integrated Logic Analyzer)** to add an instance of it.  The _ila\_0_ instance will be added.
-1. Double-click on the _ila\_0_ instance.
-1. Select **Native** as the _Monitor type_.
-1. Enable **Trigger Out Port**, and **Trigger In port.**
-1. Select the **Probe Ports** tab, and set the **Probe Width** of _PROBE0_ to **4** and click **OK**.
-1. Using the drawing tool, connect the **probe0** port of the _ila\_0_ instance to the **gpio\_io\_o** port of the _leds_ instance.
-1. Connect the **clk** port of the _ila\_0_ instance to the **FCLK\_CLK0** port of the Zynq subsystem.
-1. Connect **TRIGG\_IN** of the ILA to **TRIGGER\_OUT\_0** of the Zynq processing system, and **TRIG\_OUT** of the ILA to the **TRIGGER\_IN\_0**.
+### Thêm lõi ILA và kết nối với cổng đầu ra LED.
 
-### Add the VIO core and connect it to the math\_ip ports.
-1. Click the **Plus** button or right click the Diagram window and select **Add IP**, search for **vio** in the catalog.
-1. Double-click on the **VIO (Virtual Input/Output)** to add an instance of it.
-1. Double-click on the _vio\_0_ instance to open the configuration form.
-1. In the _General Options_ tab, leave the **Input Probe Count** set to **1** and set the **Output Probe Count** to **3**
-1. Select the _PROBE\_IN Ports_ tab and set the _PROBE\_IN0_ width to **9**.
-1. Select the _PROBE\_OUT Ports_ tab and set _PROBE\_OUT0_ width to **1** , _PROBE\_OUT1_ width to **8** , and _PROBE\_OUT2_ width to **8**.
-1. Click **OK**.
-1. Connect the VIO ports to the math instance ports as follows:
+1. Nhấp chọn **Plus** hoặc chuột phải vào cửa sổ sơ đồ và chọn **Add IP**, tìm kiếm **ila** trên thanh công cụ.
+2. Nhấp chuột hai lần vào **ILA (Integrated Logic Analyzer)** để thêm bản thể cho nó. Bản thể _ila\_0_ sẽ được thêm.
+3. Nhấp chuột hai lần vào bản thể _ila\_0_.
+4. Lựa chọn **Native** là *Monitor type*.
+5. Bật **Trigger Out Port**, và **Trigger In port**.
+6. Lựa chọn cửa sổ **Probe Ports**, và chỉnh **Probe Width** của *PROBE0* thành **4** và nhấn *OK*.
+7. Sử dụng công cụ vẽ, kết nối cổng **probe0** của _ila\_0_ với cổng **gpio\_io\_o** của *leds*.
+8. Kết nối cổng **clk** của *ila\_0* đến cổng **FCLK\_CLK0** của hệ thống Zynq phụ.
+9. Kết nối **TRIGG\_IN** của *ila\_0* với **TRIGGER\_OUT\_0** của hệ thống xử lý Zynq, và **TRIG\_OUT** của ILA đến **TRIGGER\_IN\_0**.
+
+### Thêm lõi VIO và kết nối nó với cổng math_ip.
+
+
+1. Nhấp chọn **Plus** hoặc chuột phải vào cửa sổ sơ đồ và lựa chọn **Add IP**, tìm kiếm **vio** ở thanh công cụ.
+2. Nhấp chuột hai lần vào **VIO (Virtual Input/Output) để thêm bản thể cho nó.
+3. Nhấp chuột hai lần vào *vio_0* để mở bảng tùy chỉnh.
+4. Ở trong bảng tùy chọn tổng quát, chỉnh **Input Probe Count** thành 1 và **Output Probe Count** thành 3.
+5. Lựa chọn bảng *PROBE_IN Ports* và chỉnh độ rộng *PROBE_IN0* thành 9.
+6. Lựa chọn bảng *PROBE_OUT Ports* và chỉnh độ rộng của *PROBE_OUT0* thành 1, *PROBE_OUT1* thành 8, và của *PROBE_OUT2* thành 8.
+7. Chọn **OK**.
+8. Kết nối cổng VIO đến cổng *math instance* theo như sau :
+   ``` 
+   probe_in -> result
+   probe_out0 -> sel
+   probe_out1 -> ain_vio
+   probe_out2 -> bin_vio
    ```
-    probe_in -> result
-    probe_out0 -> sel
-    probe_out1 -> ain_vio
-    probe_out2 -> bin_vio
-   ```
-1. Connect the **CLK** port of the _vio\_0_ to FCLK\_CKL0 net.
-1. The block diagram should look similar to shown below.
+   
+9. Kết nối cổng **CLK** của *vio_0* với mạng lưới FCLK_CKL0.
+10. Sơ đồ khối sẽ giống như hình sau.
     <p align="center">
     <img src ="./pics/lab6/6_AddILAVIO.png" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>VIO added and connections made</i>
+    <i>VIO được thêm và kết nối được tạo</i>
     </p>
 
-### Mark Debug the S\_AXI connection between the AXI Interconnect and math\_0 instance. Validate the design.
-1. Select the **S\_AXI** connection between the AXI Interconnect and the _math\_ip\_0_ instance **.**
-1. Right-click and select **Debug** to monitor the AXI4Lite transactions.
+### Đánh dấu sửa lỗi cho kết nối S\_AXI giữa mạng kết nối AXI và bản thể math\_0. Xác minh thiết kế.
 
-    Notice that a system\_ila IP instance got added and the M03\_AXI &lt;-&gt; S\_AXI connection is connected to its SLOT\_0\_AXI interface.
+1. Lựa chọn kết nối **S\_AXI** giữa mạng kết nối AXI và bản thể _math\_ip\_0_.
+2. Chuột phải và lựa chọn **Debug** để theo dõi giao thức AXI4Lite.
 
-1. Click the **Run Connection Automation** link to see the form where you can select the desired channels to monitor.
-1. Change _AXI Read Address_ and _AXI Read Data_ channels to **Data** since we will not trigger any signals of those channels.
+   Để ý rằng system\_ila IP được thêm vào và M03\_AXI &lt;-&gt; S\_AXI được kết nối với giao diện SLOT_0_AXI của nó.
+   
+3. Nhấp chọn **Run Connection Automation** để thấy bảng tùy chỉnh mà bạn có thể lựa chọn kênh mong muốn theo dõi.
+4. Đổi kênh *AXI Read Address* và *AXI Read Data* thành **Data** từ đó ta sẽ không kích hoạt bất kì tín hiệu nào của những kênh đó.
 
-    This saves resources being used by the design.
+  Nguồn lưu này được sử dụng bởi thiết kế.
     <p align="center">
     <img src ="./pics/lab6/7_SelChannel.png" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Selecting channels for debugging</i>
+    <i>Lựa chọn kênh cho việc sửa lỗi</i>
     </p>
+   
+5. Xác minh rằng sẽ không có địa chỉ chưa được liên kết nào ở trong bảng *Address Editor*.
+6. Chạy kiểm tra thiết kế (**Tools -> Validate Design**) và kiểm tra rằng nó không có lỗi nào.
 
-1. Verify that there are no unmapped addresses shown in the _Address Editor_ tab.
-1. Run Design Validation (**Tools -> Validate Design**) and verify there are no errors.
-
-    The design should now look similar to the diagram below
+	Thiết kế sẽ trông giống như sơ đồ dưới đây 
     <p align="center">
     <img src ="./pics/lab6/8_CompletedDiagram.png" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Completed Design</i>
+    <i>Thiết kế sau khi hoàn thiện</i>
     </p>
 
-## Add Design Constraints and Generate Bitstream        
-1. Right click in the _Sources_ panel, and select **Add Sources.**
-1. Select **Add or Create Constraints** and click **Next**.
-1. Click the _Plus_ button then **Add Files**, browse to **{sources}\lab6** and select **lab6\_pynz2.xdc**.
-1. Click **OK** and then click **Finish.**
-1. Click on the **Generate Bitstream** to run the implementation and bit generation processes.
-1. Click **Save** to save the project (if prompted), **OK** to ignore the warning (if prompted), and **Yes** to launch Implementation (if prompted). Click **OK** to launch the runs.
-1. When the bitstream generation process has completed successfully, click **Cancel**.
+### Thêm ràng buộc thiết kế và tạo ra Bitstream.
 
-## Generate an Application in Vitis IDE        
-### Export the implemented design and launch Vitis IDE.
-1. Export the hardware configuration by clicking **File &gt; Export &gt; Export Hardware…** , click the box to **Include Bitstream**
-1. Click **OK** to export and **Yes** to overwrite the previous project created by lab2.
-1. Launch Vitis IDE by clicking **Tools > Launch Vitis IDE** and click **OK.**
-1. Right-click on any opened system projects, and click **Close System Project**.
+1. Chuột phải vào bảng điều khiển *Sources*, và chọn **Add Sources**.
+2. Lựa chọn **Add or Create Constraints** và nhấn **Next**.
+3. Nhấp chọn nút *Plus* rồi **Add Files**, tìm kiếm tới **{sources}\lab6** và chọn **lab6\_pynz2.xdc.**
+4. Nhấp chọn **OK* sau đó ấn **Finish**.
+5. Nhấp chọn **Generate Bitstream** để chạy triển khai và tiến trình sản xuất bit.
+6. Nhấp chọn **Save** để lưu dự án( nếu nó được khuyến khích), **OK** để từ chối cảnh báo (nếu nó được khuyến khích), và **Yes** để chạy tiến trình (nếu nó được khuyến khích). Nhấp chọn **OK** để chạy.
+7. Khi quá trình sản xuất bitstream hoàn thành, chọn **Cancel**.
 
-### Create an empty application project named lab6, and import the provided lab6.c file.
-1. From the File menu select **File > New > Application Project**. Click Next to skip the welcome page if necessary.
-1.  In the Platform Selection window, select **Create a new platform from hardware (XSA)** and browse to select the **{labs}\lab6\system_wrapper.xsa** file exported before.
-1. Enter **lab6_platform** as the _Platform name_, click **Next.**
-1. Name the project **lab6**, click **Next**.
-1. In the domain selection window, select **standalone_ps7_cortexa9_0**, click **Next**.
-1. In the templates selection window, select **Empty Application(C)**, click **Finish**.
-1. Expand **lab6** in the Explorer view, and right-click on the **src** folder, and select **Import Sources...**.
-1. Browse to select the **{sources}\lab6** folder, click **Open Folder**.
-1. Select **lab6.c** and click **Finish**.  
+## Tạo một ứng dụng trong Vitis IDE
+### Xuất thiết kế và khởi động Vitis IDE
 
-    A snippet of the part of the source code is shown in the following figure. It shows that two operands are written to the custom core, the result is read, and printed out.  The write transaction will be used as a trigger condition in the Vivado Logic Analyzer.
+1. Xuất tùy chỉnh phần cứng bằng cách nhấp chuột vào **File > Export > Export Hardware..**, nhấp vào hộp để **Include Bitstream**
+2. Nhấp chọn **OK** để xuất và **Yes** để viết đè lên bài dự án đã tạo trước đó bởi lab2.
+3. Khởi chạy Vitis IDE bằng cahs nhấp chọn **Tools > Launch Vitis IDE ** và nhấn **OK**.
+4. Chuột phải vào bất kì dự án hệ thống nào đang mở, sau đó nhấn **Close System Project**.
+
+### Tạo một dự án áp dụng trống tên là lab6, và xuất ra với lab6.c
+1. Từ bảng tùy chọn File, chọn **File > New > Application Project** Chọn Next để bỏ qua trang chào mừng.
+2. Trong cửa sổ lựa chọn nền tảng, lựa chọn **Create a new platform from hardware (XSA)** và duyệt để chọn file **{labs}\lab6\system_wrapper.xsa** đã được xuất ra trước đó.
+3. Nhập **lab6platform** là tên the _Platform, nhấn **Next**.
+4. Đtặ tên dự án là **lab6**, nhấn **Next**.
+5. Ở cửa sổ chọn miền, lựa chọn **standalone_ps7_cortexa9_0**, nhấn **Next**.
+6. Ở cửa sổ chọn mẫu, lựa chọn **Empty Application(C)**, nhấn **Finish**.
+7. Mở rộng lab6 để ở chế độ khám phá, và chuột phải vào thư mục **src**, và lựa chọn **Import Sources**
+8. Duyệt để chọn thư mục **{sources}\lab6**, nhấn chọn **Open Folder.**
+9. Lựa chọn **lab6.c** và chọn **Finish**
+
+   Một đoạn mã nguồn được thể hiện ở hình ảnh dưới đây. Nó cho ta thấy rằng hai phép toán tử được viết cho một lõi tùy chỉnh, kết quả được đọc và in ra. Giao thức được viết sẽ được sử dụng để bật điều kiện trong Vivado Logic Analyzer.
     <p align="center">
     <img src ="./pics/lab6/9_SrcCode.png" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Source Code snippet</i>
+    <i>Một đoạn mã nguồn</i>
     </p>
 
-1. Right click on **lab6** from the Explorer View, and select **Debug As &gt; Debug Configurations**
-1. Right click on **Single Application Debug** and select **New Configuration** to create a new configuration.
-1. In the **Target Setup** tab, check the **Enable Cross-Triggering** option, and click the Browse button.
+10. Chuột phải lựa chọn **lab6** từ góc nhìn Explorer, lựa chọn **Debug As > Debug Configurations.**
+11. Chuột phải lựa chọn **Single Application Debug** và chọn **New Configuration** để tạo một tùy chỉnh mới.
+12. Ở trang **Target Setup**, kiểm tra tùy chọn **Enable Cross-Triggering**, và nhấn chọn nút **Browse**.
     <p align="center">
     <img src ="./pics/lab6/10_TargetSetup.png" width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Enable cross triggering in the software environment</i>
-    </p>
-1. When the _Cross Trigger Breakpoints_ dialog box opens, click **Create**
-1. Select the options as shown below and click **OK** to set up the cross-trigger condition for _Processor to Fabric_.
+    <i>Khởi động môi trường kích hoạt chéo</i>
+	</p>
+
+13. Khi hộp thoại *Cross Trigger Breakpoints* mở, nhấn **Create**
+14. Chọn tùy chỉnh như dưới đây và nhấn **OK** để cài đặt điều kiện *cross-trigger* cho * Processor to Fabric.*
     <p align="center">
     <img src ="./pics/lab6/11_CrossTrigger.png" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Enabling CPU0 for request from PL</i>
-    </p>
+	<i>Bật CPU0 cho yêu cầu từ PL</i>
+	</p>
 
-1. In the _Cross Trigger Breakpoints_ dialog box click **Create** again.
-1. Select the options as shown below and click **OK** to set up the cross trigger condition for _Fabric to Processor_.
+15. Ở hộp thoại *Cross Trigger Breakpoints* nhấp chọn **Create**
+16. Chọn tùy chỉnh như hình dưới đây và nhấn chọn **OK** để cài đặt điều kiện *cross-trigger* cho *Fabric to Processor*.
     <p align="center">
     <img src ="./pics/lab6/12_CrossTrigger.png" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Enabling CPU0 for request to PL</i>
-    </p>
-1. Click **OK** , then click **Apply,** then **Close**
-1. Build the project either by clicking the Hammer button or right-clicking on **lab6** from Explorer View and selecting **Build Project**.
+	<i>Bật CPU0 cho yêu cầu đến PL</i>
+	</p>
 
-## Test in Hardware        
-### Start the debug session and establish serial communication.
-1. Connect and power up the board with JTAG mode.
-1. Select the **lab6** project in _Explorer View_, right-click and select **Debug As &gt; Launch Hardware (Single Application Debug)** to download the application. The program execution starts and suspends at the entry point.
-1. Click **Window > Show View**, search and open **Vitis Serial Terminal**.
-1. Click the Add button to connect to a port.
+17. Nhấn **OK**, sau đó nhấn **Apply**, và cuối cùng là **Close**
+18. Xây dựng dự án bằng cách nhấn vào nút *Hammer* hoặc nhấp chuột phải vào **lab6** từ Chế độ Xem Trình duyệt và chọn **Build Project.**
+
+## Kiểm tra ở phần cứng
+### Bắt đầu gỡ lỗi và thiết lập giao tiếp nối tiếp
+1. Kết nối và cấp nguồn cho mạch với chế độ JTAG.
+2. Lựa chọn dự án **lab6** ở * Explorer View*, chuột phải và chọn ** Debug As > Launch Hardware (Single Application Debug)** để tải ứng dụng. Chạy chương trình và tạm dừng ở *entry point*.
+3. Nhấn **Window > Show View**, tìm kiếm và mở **Vitis Serial Terminal.**
+4. Nhấp chọn nút *Add* để kết nối tới cổng.
     <p align="center">
     <img src ="./pics/lab6/13_AddPort.png" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Add a Serial Port</i>
-    </p>
-1. Select the **Port** from the dropdown menu. Keep the Advanced Settings as-is. Click **OK**.
-    <p align="center">
-    <img src ="./pics/lab6/14_SelPort.png" width="35%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Connect to Serial Port</i>
-    </p>
+	<i>Thêm cổng nối tiếp</i>
+	</p>
+	   
+5. Lựa chọn **Port** từ menu dropdown. Để cài đặt nâng cao là *as-is*. Nhấn **OK**.
+   <p align="center">
+   <img src = "./pics/lab6/14_SelPort.png" width="35%" height="80%"/>
+   </p>
+   <p align="center">
+   <i>Kết nối tới cổng nối tiếp</i>
+   </p>
+   
+### Bắt đầu trình phần cứng với Vivado
 
-### Start the hardware session from Vivado.
-1. Switch to Vivado.
-1. Click on **Open Hardware Manager** from the _Flow Navigator_ pane to invoke the analyzer.
-1. Click on the **Open Target &gt; Auto connect** to establish the connection with the board.
-1. Select **Window &gt; Debug Probes**
-
-    The hardware session will open showing the **Debug Probes** tab in the **Console** view.
-    <p align="center">
-    <img src ="./pics/lab6/15_DebugProbe.png" width="40%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Debug probes</i>
-    </p>
-
-    The hardware session status window also opens showing that the FPGA is programmed (we did it in Vitis IDE), there are three cores out of which the two ila cores are in the idle state.
-    <p align="center">
-    <img src ="./pics/lab6/16_HardwareSession.png" width="60%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Hardware session status</i>
-    </p>
-1. Select the XC7Z020, and click on the **Run Trigger Immediate** button to see the signals in the waveform window.
-    <p align="center">
-    <img src ="./pics/lab6/17_RunTrigger.png" width="60%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Opening the waveform window</i>
-    </p>
-
-### Setup ILA Trigger Conditions for hw_ila_a
-1. Click on the **hw\_ila\_2** tab to select it. In the **Debug Probes** window, under _hw\_ila\_2_, drag and drop the **WDATA** signal to the **Trigger setup** window.
-1. Set the value to **XXXX\_XX12** (HEX) (the value written to the math\_0 instance at line 24 of the lab6.c).
-    <p align="center">
-    <img src ="./pics/lab6/18_TriggerSetup.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Trigger Setup</i>
-    </p>
-
-1. Similarly, add **WREADY, WSTRB,** and **WVALID** to the **Trigger Setup** window.
-1. Change the radix to **[B]\(binary\)** for **WSTRB**, and change the value from **XXXX** to **XXX1**
-1. Change the value of **WVALID** and **WREADY** to **1**.
-1. Set the trigger position of the _hw\_ila\_2_ to **512** in the window _**Settings** – hw\_ila\_2_
-    <p align="center">
-    <img src ="./pics/lab6/19_SettingsILA2.png" width="60%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Setting up the ILA</i>
-    </p>
-1. Similarly, set the trigger position in the _**Settings** – hw\_ila\_1_ window to **512**.
-1. Select **hw\_ila\_2** in the _Hardware_ window and click on the **Run Trigger** button and observe that the _hw\_ila\_2_ core is armed and showing the status as **Waiting For Trigger**.
-    <p align="center">
-    <img src ="./pics/lab6/20_RunTrigger.png" width="70%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Hardware analyzer running and in capture mode</i>
-    </p>
-
-1. Switch to Vitis IDE.
-1. Near line 27, double click on the left border on the line where xil\_printf statement is defined in the lab6.c to set a breakpoint.
-    <p align="center">
-    <img src ="./pics/lab6/21_SetBreakpoint.png" width="70%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Setting a breakpoint</i>
-    </p>
-1. Click on the **Resume (F8)** button to execute the program and stop at the breakpoint.
-1. Back to Vivado, notice that the **hw\_ila\_2** status changed from **Waiting for Trigger** to **Idle**, and the waveform window shows the triggered output (select the _hw\_ila\_data\_2.wcfg_ tab if necessary).
-1. Move the cursor to closer to the trigger point and then click on the **Zoom In** button to zoom at the cursor. Click on the **Zoom In** button couple of times to see the activity near the trigger point. Similarly, you can see other activities by scrolling to right as needed.
+1. Chuyển thành Vivado.
+2. Nhấn chọn **Open Hardware Manager** từ bảng *Flow Navigator* để kich hoạt phân tích.
+3. Nhấn chọn **Open Target > Auto connect** để xây dựng sự kết nối với bảng.
+4. Lựa chọn **Window > Debug Probes**
+   Trình phần cứng sẽ mở ra và thể hiển bảng **Debug Probes** ở chế độ **Console**.
+   <p align="center">
+   <img src = "./pics/lab6/15_DebugProbe.png" width="40%" height="80%"/>
+   </p>
+   <p align="center">
+   <i>Debug Probes</i>
+   </p>
+   
+   Cửa sổ trạng thái của trình phần cứng cũng sẽ mở cho thấy FPGA đã được lập trình (Ta đã làm nó bằng Vitis IDE), hai trong ba lõi là ở trạng thái *idle*.
+   <p align="center">
+   <img src = "./pics/lab6/16_HardwareSession.png" width="60%" height="80%"/>
+   </p>
+   <p align="center">
+   <i>Trạng thái của trình phần cứng</i>
+   </p>
+   
+5. Lựa chọn XC7Z020, và nhấn vào nút **Run Trigger Immediate** để thấy tín hiệu từ cửa sổ dạng sóng.
+   <p align="center">
+   <img src = "./pics/lab6/17_RunTrigger.png" width="60%" height="80%"/>
+   </p>
+   <p align="center">
+   <i>Mở cửa sổ dạng sóng</i>
+   </p>
+   
+### Cài đặt điều kiện cho kích hoạt ILA cho *hw_ila_a*
+1. Nhấn chọn thẻ **hw\_ila\_2**. Trong cửa sổ **Debug Probes**, dưới _hw\_ila\_2_, kéo và thả tín hiệu **WDATA** sang cửa sổ **Trigger setup**.
+2. Chỉnh giá trị thành **XXX\_XX12** (HEX)(giá trị được viết trong math'_0 instance tại dòng 24 của lab6.c)
+   <p align="center">
+   <img src = "./pics/lab6/18_TriggerSetup.png" width="80%" height="80%"/>
+   </p>   
+   <p align="center">
+   <i>Cài đặt kích hoạt</i>
+   </p>
+   
+3. Tương tự, thêm **WREADY,WSTRB** và **WVALID** vào cửa sổ **Trigger Setup**.
+4. Chuyển cơ số thành **[B](Nhị Phân)** cho **WSTRB**, và đổi giá trị từ **XXXX** thành **XXXX1**.
+5. Thay đổi giá trị của **WVALID** và **WREADY** thành 1.
+6. Chỉnh vị trí của *trigger* của _hw\_ila\_2_ thành **512** ở trong cửa sổ _**Settings** - hw\_ila\_2_
+   <p align="center">
+   <img src = "./pics/lab6/19_SettingsILA2.png" width="60%" height="80%"/>
+   </p>   
+   <p align="center">
+   <i>Cài đặt ILA</i>
+   </p>
+   
+7. Tương tự, chỉnh vị trí *Trigger* ở trong cửa sổ **Settings** *-hw_ila_1* thành **512**
+8. Chọn **hw\_ila\_2** ở trong cửa sổ *Hardware* và chọn **Run Trigger** và quan sát lõi _hw\_ila\_2_ được trang bị và thể hiện rằng trạng thái là **Waiting For Trigger**
+   <p align="center">
+   <img src = "./pics/lab6/20_RunTrigger.png" width="70%" height="80%"/>
+   </p>   
+   <p align="center">
+   <i>Hardware Analyzer chạy và trong chế độ ghi lại</i>
+   </p>
+   
+9. Đổi qua Vitis IDE.
+10.  Gần dòng 27, nhấn chuột hai lần vào viền trái của dòng có lệnh *xil_printf* được định nghĩa trong lab6.c để cài đặt *breakpoint*.
+	<p align="center">
+	<img src = "./pics/lab6/21_SetBreakpoint.png" width="70%" height="80%"/>
+    </p>   
+	<p align="center">
+	<i>Cài đặt breakpoint</i>
+	</p>
+   
+1.  Nhấn nút **Resume (F8)** để chạy chương trình và dừng lại tại *breakpoint* (điểm ngắt).
+2.  Trở lại Vivado, để ý rằng trạng thái **hw\_ila\_2** chuyển từ **Waiting for Trigger** thành **Idle**, và cửa sổ dạng sóng cho thấy đầu ra kích hoạt (chọn thẻ _hw\_ila\_data\_2.wcfg_ nếu cần thiết).
+3.  Di chuyển con trỏ tới gần điểm kích hoạt và nhấn vào nút **Zoom In** để phóng to vị trí con trỏ. Nhấp vào nút **Zoom In** vài lần để thấy hoạt động cạnh điểm kích hoạt. Tương tự, bạn có thể thấy các hoạt động khác bằng cạnh cuộn sang trái theo nhu cầu.
     <p align="center">
     <img src ="./pics/lab6/22_Waveform1.png" width="60%" height="80%"/>
     <img src ="./pics/lab6/23_Waveform2.png" width="60%" height="80%"/>
     <img src ="./pics/lab6/24_Waveform3.png" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Zoomed waveform view of the three AXI transactions</i>
-    </p>
-    Observe the following:
+	<i>Phóng lớn dạng sóng của cả ba giao thức AXI</i>
+	</p>
+   
+   Quan sát như sau:
 
-    Around the 512th sample WDATA being written is 0x012 at offset 0 (AWADDR=0x0).
-    At the 536th sample, offset is 0x4 (AWADDR), and the data being written is 0x034.
-    At the 559th sample, data is being read from the IP at the offset 0x0 (ARADDR), and at 561th mark the result (0x46) is on the RDATA bus.
+	Xung quang mẫu thứ 512 WDATA được viết là 0x012 ở offset 0 (AWADDR=0x0). 
+	Ở mẫu thứ 536, offset là 0x4 (AWADDR), và dữ liệu được viết là 0x034.
+	Ở mẫu thứ 559, dữ liệu được đọc từ IP ở offset 0x0 (ARADDR), và ở mẫu thứ 561 đánh dấu kết quả (0x46) ở trên RDATA bus.
 
-### Interact with the VIO Cores in Vivado
-1. In Vivado, select the **hw\_vio\_1** core in the _Dashboard Options_ panel.
-1. Click on the **Add** button and select all vio signals to stimulate and monitoring.  Change the **vio\_0\_probe\_out0** value to **1** so the math\_ip core input can be controlled via the VIO core.
-    <p align="center">
-    <img src ="./pics/lab6/25_VioProbe.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>VIO probes</i>
-    </p>
-1. Change **vio\_0\_probe\_out1** value to **55** (in Hex), and similarly, **vio\_0\_probe\_out2** value to **44** (in Hex). Notice that for a brief moment a blue-colored up-arrow will appear in the Activity column and the result value changes to **099** (in Hex).
-    <p align="center">
-    <img src ="./pics/lab6/26_ChangeInput.png" width="60%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Input stimuli through the VIO core's probes</i>
-    </p>
-1. Try a few other inputs and observe the outputs.
-1. Once done, set the _vio\_0\_probe\_out0_ to **0** to isolate the vio interactions with the math\_ip core.
+### Tương tác với lõi VIO ở trong Vivado
 
-### Setup the ILA Trigger Conditions for hw_ila_1
-1. Select the **hw\_ila\_1** in the _Dashboard Options_ panel.
-1. Add the LEDs to the **Trigger Setup**, and set the trigger condition of the _hw\_ila\_1_ to trigger at LED output value equal to **0x5** for the PYNQ-Z2.
-    <p align="center">
-    <img src ="./pics/lab6/27_TriggerSetup.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>Setting up Trigger for hw_ila_1</i>
-    </p>
-1. Ensure that the trigger position for the _hw\_ila\_1_ is set to **512**.
+1. Trong Vivado, chọn lõi **hw_vio_1** trong bảng điều khiển *Dashboard Options*.
+2. Nhấn chọn nút **Add** và chọn tất cả sóng của vio để mô phỏng và quan sát. Thay đổi giá trị của **vio_0_probe_out0** thành **1** để đầu ra lõi math_ip có thể điều khiển thông qua lõi VIO.
+   <p align="center">
+   <img src = "./pics/lab6/25_VioProbe.png" width="80%" height="80%"/>
+   </p>   
+   <p align="center">
+   <i>Cảm biến VIO </i>
+   </p>
 
-    >Make sure that the switches are not set to 11 on PYNQ-Z2 as this is the exit pattern.
+3. Thay đổi giá trị **vio\_0\_probe\_out1** thành **55** (trong hệ HEX), và tương tự, giá trị **vio\_0\_probe\_out2** thành **44** (trong hệ HEX). Để ý lúc mũi tên màu xanh hướng lên sẽ xuất hiện ở trên cột *Activity* và giá trị đầu ra đổi thành **099** (trong hệ HEX).
+	<p align="center">
+    <img src = "./pics/lab6/26_ChangeInput.png" width="60%" height="80%"/>
+    </p>   
+	<p align="center">
+	<i>Đầu vào tác động thông qua cảm biến lõi VIO</i>
+	</p>
 
-1. Right-click on the **hw\_ila\_1** in the _hardware_ window, and arm the trigger by selecting **Run Trigger.** The hardware analyzer should be waiting for the trigger condition to occur.
+4. Thử vài giá trị vào khác và quan sát kết quả.
+5. Một khi đã xong, chỉnh *vio_0_probe_out0* thành 0 để phân tách tương tác vio với lõi math_ip.
 
-1. In the Vitis IDE Debug window, click on the **Resume (F8)** button.
-1. Press the push-buttons and see the corresponding LED turning ON and OFF.
-1. When the condition is met, the waveform will be displayed.
-    <p align="center">
-    <img src ="./pics/lab6/28_Waveform.png" width="80%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>ILA waveform window after Trigger</i>
-    </p>
+### Cài đặt điều kiện kích hoạt ILA cho hw_ila_1
 
-### Cross trigger a debug session between the hardware and software
-1. In Vivado, select **hw\_ila\_1**
-1. In the **ILA properties** window, expand the **CONTROL**, set the _TRIGGER_MODE_ to **BASIC\_OR\_TRIGG\_IN** , and the _TRIG\_OUT\_MODE_ to **TRIGGER\_OR\_TRIG\_IN**
-    <p align="center">
-    <img src ="./pics/lab6/29_ILAProperties.png" width="60%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i>ILA Core Properties</i>
-    </p>
+1. Chọn **hw_ila_1** trong bảng điều khiển *Dashboard Options*
+2. Thêm LEDs vào **Trigger Setup**, và chỉnh điều kiện kích hoạt của *hw_ila_1* thành điều kiện tại giá trị đầu ra của LED bằng **0x5** cho PYNQ-Z2.
+   <p align="center">
+   <img src = "./pics/lab6/27_TriggerSetup.png" width="80%" height="80%"/>
+   </p>   
+   <p align="center">
+   <i>Cài đặt Kích hoạt cho hw_ila_1</i>
+   </p>
 
-1. In Vitis IDE, in the Design view, relaunch the software by right clicking on the lab6 project, and selecting **Debug As &gt; Launch Hardware (Single Application Debug)**. Click **OK** if prompted to relanuch.
+3. Chắc chắn rằng vị trí kích hoạt cho *hw_ila_1* dược chỉnh là **512**.
 
-    The program will be loaded and the excution will suspend at the entry point
+   >Chắc chắn rằng các công tắc không chỉnh thành 11 ở trong PYNQ-Z2 vì đây là kiểu thoát ra.
+  
+4. Chuột phải vào **hw_ila_1** ở cửa sổ *hardware*, và trang bị kích hoạt bằng cách chọn **Run Trigger**. Trình phân tích phần cứng nên được đợi cho điều kiện kích hoạt xảy ra.
+5. Ở cửa sổ Vitis IDE Debug, nhấp vào nút **Resume (F8)**.
+6. Nhấn các nút push và xem các LED tương ứng BẬT và TẮT.
+7. Khi gặp điều kiện, dạng sóng sẽ được hiện ra.
+   <p align="center">
+   <img src = "./pics/lab6/28_Waveform.png" width="60%" height="80%"/>
+   </p>   
+   <p align="center">
+   <i>Cửa sổ dạng sóng ILA sau khi kích hoạt</i>
+   </p>
 
-1. Arm the _hw\_ila\_1_ trigger by clicking **Run Trigger**.
-1. In Vitis IDE continue execution of the software to the next breakpoint (line 27).
+### Kích hoạt trình gỡ lỗi chéo cho phần cứng và phần mềm
+1. Ở trong Vivado, chọn **hw\_ila\_1**
+2. Ở trong cửa sổ **ILA properties**, mở rộng **CONTROL**, chỉnh _TRIGGER\_MODE_ thành **BASIC\_OR\_TRIGG\_IN**, và _TRIG\_OUT\_MODE_ thành **TRIGGER\_OR\_TRIG\_IN**
+   <p align="center">
+   <img src = "./pics/lab6/29_ILAProperties.png" width="60%" height="80%"/>
+   </p>   
+   <p align="center">
+   <i>Thông tin lõi ILA</i>
+   </p>
 
-    When the next breakpoint is reached, return to Vivado and notice the ILA has triggered.
+3. Ở trong Vitis IDE, ở chế độ Design, tái khởi động phần mềm bằng cách chuột phải vào dự án lab6, và chọn ** Debug As > Launch Hardware (Single Application Debug)**. Nhấn **OK** nếu nó được gợi ý khởi động lại.
 
-### Trigger the ILA and cause the software to halt
-1. Click **Step Over (F6)** button twice to pass the current breakpoint
-1. Arm the _hw\_ila\_1_ trigger by clicking **Run Trigger**.
-1. **Resume (F8)** the software until it enters the while loop
-1. Press the push-buttons to **0x5**, and notice that the application in Vitis IDE will break at some point (This point will be somewhere within the while loop)
-1. Click on the **Resume** button. The program will continue execution. Flip switches until it is **0x03**.
-1. Click the **Disconnect** button in Vitis IDE to terminate the execution.
-1. Close the Vitis IDE by selecting **File &gt; Exit**.
-1. In Vivado, close the hardware session by selecting **File &gt; Close Hardware Manager**, and click **OK**.
-1. Close Vivado by selecting **File &gt; Exit**.
-1. Turn OFF the power on the board.
+	Chương trình sẽ được tải và sẽ dừng lại tại điểm vào.
+	
+4. Trang bị kích hoạt *hw_ila_1* bằng cách nhấn vào **Run Trigger**.
+5. Trong Vitis IDE, tiếp tục trình chạy của phần mềm cho đến điểm dừng tiếp theo (dòng 27).
 
-## Conclusion
+   Khi tới điểm dừng tiếp theo, quay trở lại Vivado và để ý rằng ILA đã được kích hoạt.
 
-In this lab, you added a custom core with extra ports so you can debug the design using the VIO core. You instantiated the ILA and the VIO cores into the design. You used Mark Debug feature of Vivado to debug the AXI transactions on the custom peripheral. You then opened the hardware session from Vivado, setup various cores, and verified the design and core functionality using Vitis IDE and the hardware analyzer.
+### Kích hoạt ILA và làm phần mềm dừng lại
+1. Nhấp chọn nút **Step Over (F6)** hai lần để đi qua điểm dừng hiện tại.
+2. Trang bị kích hoạt _hw\_ila\_1_ bằng cách nhấn vào **Run Trigger**.
+3. **Resume (F8)** phần mềm cho đến khi nó tự vào vòng lặp while.
+4. Nhấn nút push đến **0x5**, và để ý rằng ứng dụng trong Vitis IDE sẽ dừng lại tại vài điểm (Điểm này sẽ ở đâu đó trong vòng lặp while).
+5. Nhấn vào nút **Resume**. Chương trình sẽ tiếp tục chạy. Lật các công tắc cho đến khi nó là **0x03**.
+6. Nhấn chọn nút **Disconnect** ở trong Vitis IDE để dừng chạy.
+7. Đóng Vitis IDE bằng cách chọn **File > Exit.**
+8. Ở trong Vivado, tắt trình phần cứng bằng cách chọn **File > Close Hardware Manager**, và nhấn **OK**.
+9. Đóng Vivado bằng cách chọn **File > Exit**
+10. Tắt nguồn của bảng.
+
+## Tổng Kết
+
+Trong bài thực hành này, bạn thêm lõi tùy chỉnh với cổng phụ để có thể gỡ lỗi bằng cách sử dụng lõi VIO. Bạn khởi tạo lõi ILA và VIO vào thiết kế. Bạn dùng chức năng Mark Debug của Vivado để gỡ lỗi gaio thức AXI ở trên thiết bị ngoại vi tùy chỉnh. Bạn sau đó mở trình phần cứng từ Vivado, cài đặt đa nhân, và xác minh thiết kế và lõi bằng cách sử dụng Vitis IDE và trình phân tích phần cứng.

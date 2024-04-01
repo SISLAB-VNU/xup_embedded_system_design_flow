@@ -1,60 +1,59 @@
-# Software Development Debugging
+# Gỡ lỗi phát triển phần mềm
 
-## Objectives
-After completing this lab, you will be able to:
-* Use Vitis Debugger to set break points and view the content of variables and memory
-* Develop a linker script
-* Partition the executable sections into both the DDR3 and BRAM spaces
-## Steps
+## Mục tiêu
 
-### Open the project in Vivado
+Sau khi hoàn thành lab này bạn sẽ có thể:
+* Sử dụng *Vitis Debugger* để đặt các điểm dừng và xem nội dung của biến và bộ nhớ
+* Phát triển một kịch bản liên kết
+* Phân chia các phần thực thi được thành cả DDR3 và BRAM
 
-1.	Open the lab4 project from the previous lab, and Save it as **lab5** to the **{labs}** directory. Make sure that the **Create Project Subdirectory** and **Include run results** option is checked.
+## Các bước thực hiện
 
-2.	Open the Block Design. You may notice that the status changes to synthesis and implementation out-of-date as the project was saved as. Since the bitstream is already generated and will be in the exported directory, we can safely ignore any warning about this.
+### Mở dự án trong Vivado
 
-3.	In Vivado, select **Tools > Launch Vitis IDE**
+1. Mở dự án lab4 đã làm ở trong bài lab trước, và lưu thành **lab5** trong đường dẫn **{labs}**. Đảm bảo đánh dấu lựa chọn phần **Create Project Subdirectory** và **Include run results**.
 
-    >A warning pop-up window indicating that the design is out of date. Since we have not made any changes, we can ignore this.
+2. Mở phần *Block Design*. Vì chuỗi bit đã được tạo và sẽ ở trong đường dẫn được xuất, ta có thể bỏ qua cảnh báo về sự thay đổi trạng thái của synthesis và implementation.
 
-4.	Click Yes.
+3. Mở Vivado, chọn **Tools** > **Chạy Vitis IDE** 
 
-### Create an Application Project
+    >Ở đây bỏ qua cửa sổ cảnh báo về việc thiết kế vẫn ở trạng thái cũ.
+	
+4. Chọn **Yes**.
 
-1.	In the Explorer, right click on **lab4_system** and select **Close System Project**
-1.	Select **File > New > Application Project**.
-1.  Select the **lab4_platform** created in lab4, Click Next
-1.	Name the project **lab5**, click Next
-1.  Select **standalone on ps7_cortexa9_0** as the domain. Click Next.
-1.	Select **Empty Application(C)** and click Finish.
-1.	Select **lab5 > src** in the Explorer, right-click, and select **Import Sources**.
-1.	Browse to **{sources}\lab5**, click Select Folder.
-1.  Select **lab5.c** and click finish.
-1.  Build the project by clicking the hammer button.
+### Tạo một dự án ứng dụng
 
-### Verify Operation in Hardware
+1. Vào Explorer, nhấn chuột phải vào **lab4_system** và chọn **Close System Project**
+2. Chọn **File > New > Application Project**.
+3. Chọn **lab4_platform** đã tạo ở bài lab4 trước đó, nhấn *Next*
+4. Đặt tên cho dự án là **lab5**, nhấn *Next*
+5. Chọn domain là **standalone on ps7_cortexa9_0**. Nhấn *Next*.
+6. Chọn **Empty Application(C)** và nhấn *Finish*.
+7. Chọn **lab5 > src** trong *Explorer*, nhấn chuột phải và chọn **Import Sources**.
+8. Tìm và chọn **{sources}\lab5**, nhấn *Select Folder*.
+9. Chọn **lab5.c** và nhấn chọn hoàn thành.
+10. Nhấn nút hình cái búa để xây dựng dự án.
 
-1.	Make sure that micro-USB cable(s) is(are) connected between the board and the PC. Change the boot mode to JTAG. Turn ON the power of the board.
-1. Open the **Vitis Serial Terminal** and add a connection to the corresponding port.
-2. Right-click on the **lab5** project in the Explorer and select **Run as > 1 Launch Hardware (Single Application Debug)**
-3. Depending on the switch settings you will see LEDs implementing a binary counter with corresponding delay.
+### Xác minh hoạt động trong phần cứng
+1. Đảm bảo những cáp micro-USB đã kết nối bảng mạch và PC với nhau. Thay đổi chế độ boot thành JTAG. Cấp nguồn cho bảng mạch.
+2. Mở **Vitis Serial Terminal** và thêm kết nối tới cổng tương ứng. 
+3. Nhấn chuột phải vào **lab5** trong Explorer và nhấn chọn **Run as > 1 Launch Hardware (Single Application Debug)**
+4. Tùy thuộc vào cài đặt của công tắc ta sẽ thấy các đèn LED thực hiện chức năng của bộ đếm nhị phân với độ trễ tương ứng.
     <p align="center">
     <img src ="pics/lab5/7_termop.jpg" width="35%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Terminal window output </i>
+    <i> Kết quả của cửa sổ Terminal</i>
     </p>
 
-    > Note: Setting the DIP switches and push buttons will change the results displayed. Flip the DIP switches and verify that the LEDs light with corresponding delay according to the switch settings. Also notice in the Terminal window, the previous and current switch settings are displayed whenever you flip switches.
+	>Lưu ý: Cài đặt công tắc trượt (dip switch) và nút bấm (push button) sẽ thay đổi kết quả được hiển thị. Gạt công tắc trượt và xác nhận các đèn LED sáng với độ trễ tương ứng dựa theo cài đặt công tắc. Bên cạnh đó ta thấy ở cửa sổ cuối, trạng thái cài đặt công tắc trước đó và hiện tại sẽ được hiển thị mỗi khi gạt công tắc.
 
-### Launch Debugger
+### Thực hiện gỡ lỗi
 
+1. Nhấn chuột phải vào **lab5** trong Explorer và chọn **Debug as > 1 Launch Hardware (Single Application Debug)**. Nhấn OK để thực hiện lại phiên làm việc nếu có yêu cầu
+2. Nhấn đúp vào lề bên trái để đặt một điểm dừng cho các dòng trong *lab5.c*. Điểm dừng (breakpoint) được đặt khi một dấu tick và vòng tròn màu xanh xuất hiện ở lề trái bên cạnh dòng code.
 
-1.	Right-click on the **lab5** project in the Explorer and select **Debug as > 1 Launch Hardware (Single Application Debug)**. Click OK to relaunch the session if prompted.
-
-3.	Double-click in the left margin to set a breakpoint on various lines in *lab5.c* shown below. A breakpoint has been set when a “tick” and blue circle appear in the left margin beside the line when the breakpoint was set. (The line numbers may be slightly different in your file.)
-
-     The **first** breakpoint is where count is initialized to 0.  The **second** breakpoint is to catch if the timer initialization fails. The **third** breakpoint is when the program is about to read the dip switch settings.  The **fourth** breakpoint is when the program is about to terminate due to pressing of center push button. The **fifth** breakpoint is when the timer has expired and about to write to LED.
+    Điểm dừng đầu tiên sẽ ở vị trí mà biến đếm được khởi tạo về 0. Điểm dừng thứ hai được đặt để nhận biết lỗi nếu quá trình khởi tạo bộ định thời thất bại. Điểm dừng thứ ba được đặt khi chương trình chuẩn bị đọc cài đặt của công tắc trượt. Điểm dừng thứ tư được đặt khi chương trình chuẩn bị kết thúc do nút bấm trung tâm được nhấn. Điểm dừng thứ năm là khi bộ định thời đã chạy hết và chuẩn bị ghi vào LED.
 
     <p align="center">
     <img src ="pics/lab5/8_bp.jpg" width="80%"  height="80%"/>
@@ -63,69 +62,73 @@ After completing this lab, you will be able to:
     <img src ="pics/lab5/9_bp.jpg" width="80%"  height="80%"/>
     </p>
     <p align = "center">
-    <i>Setting breakpoints</i>
+    <i>Cấu hình điểm dừng</i>
     </p>
 
-4.	Click on the **Resume** button or press **F8** to continue executing the program up until the first breakpoint is reached.
+3. Nhấn vào nút **Resume** hoặc nhấn **F8** để tiếp tục thực hiện chương trình cho tới điểm dừng đầu tiên.
 
-    In the _Variables_ tab you will notice that the count variable may have value other than 0.
-5.	Click on the **Step Over** button or press **F6** to execute one statement. As you do step over, you will notice that the count variable value changed to 0.
-6.	Click on the **Resume** button again and you will see that several lines of the code are executed and the execution is suspended at the third breakpoint. The second breakpoint is skipped.  This is due to successful timer initialization.
-7.	Click on the **Step Over (F6)** button to execute one statement. As you do step over, you will notice that the **dip_check_prev** variable value changed to a value depending on the switch settings on your board.
-8.	Click on the memory tab.  If you do not see it, go to **Window > Show View > Memory**.
-9.	Click the plus sign to add a **Memory Monitor**
+    Trong phần *Variables* ta có thể thấy biến đếm có giá trị khác 0.
+
+4. Nhấn vào nút **Step Over** hoặc nhấn **F6** để thực hiện lệnh. Khi thực hiện ta sẽ thấy giá trị biến đếm thay đổi về 0.
+5. Nhấn vào nút **Resume** một lần nữa và ta sẽ thấy các dòng code đang được thực hiện và quá trình này sẽ dừng ở điểm dừng thứ ba. Điểm dừng thứ hai được bỏ qua do đã khởi tạo thành công bộ định thời. 
+6. Nhấn vào nút **Step Over (F6)** để thực hiện lệnh. Khi thực hiện ta sẽ thấy giá trị biến **dip_check_prev** thay đổi thành một giá trị tùy thuộc vào giá trị cài đặt của công tắc trên bảng mạch.
+7. Nhấn vào tab bộ nhớ. Truy cập bằng cách vào **Window > Show View > Memory**.
+8. Nhấn vào biểu tượng dấu cộng để thêm **Memory Monitor**
 
     <p align="center">
     <img src ="pics/lab5/cmemlocn.jpg" width="50%"  height="80%"/>
     </p>
     <p align = "center">
-    <i>Monitor memory location</i>
+    <i>Quan sát vị trí bộ nhớ</i>
     </p>
 
-10.	Enter the address for the private counter load register (_0xF8F00600_), and click OK.
-
+9. Nhập địa chỉ của thanh ghi tải bộ đếm (0xF8F00600) và nhấn OK.
     <p align="center">
     <img src ="pics/lab5/dmonitormem.jpg" width="30%"  height="80%"/>
     </p>
     <p align = "center">
-    <i>Monitoring a Memory Address</i>
+    <i>Quan sát một địa chỉ bộ nhớ</i>
     </p>
+    
+	Có thể tìm địa chỉ bằng cách vào file *xparameters.h* để lấy địa chỉ gốc (# XPAR_PS7XPAR_PS7_SCUTIMER_0_BASEADDR1) và tìm offset bằng cách nhấn đúp vào file *xscutimer.h* sau đó nhấn đúp vào *xscutimer_hw.h* và chọn **XSCUTIMER_LOAD_OFFSET**.
 
-    You can find the address by looking at the _xparameters.h_ file entry to get the base address (```# XPAR_PS7XPAR_PS7_SCUTIMER_0_BASEADDR1``` ), and find the load offset double-clicking on the xscutimer.h in the outline window followed by double-clicking on the *xscutimer_hw.h* and then selecting **XSCUTIMER_LOAD_OFFSET**.
+10. Đảm bảo công tắc trượt **không** được đặt về "0000" và nhấn vào nút **Step Over** để thực hiện lệnh tải thanh ghi bộ định thời.
 
+    Ta thấy địa chỉ 0xF8F00604 đã chuyển thành màu đỏ do nội dung đã thay đổi. Xác nhận nội dung phải giống với giá trị: **dip_check_prev*32500000**. Ta sẽ thấy giá trị hệ 16 tương ứng (hiển thị các byte theo thứ tự 0 --> 3).
+    
+    >Ví dụ với dip_check_prev = 1; giá trị là 0x01EFE920; (đảo ngược: 0x20E9EF01)
 
-11.	Make sure the DIP Switches are **not** set to “0000” and click on the **Step Over** button to execute one statement which will load the timer register.
+11. Nhấn nút **Resume** để tiếp tục thực hiện chương trình. Chương trình sẽ dừng khi ghi vào cổng LED (bỏ qua điểm dừng thứ tư do nút bấm chưa được nhấn).
 
-    Notice that the address 0xF8F00604 has become red colored as the content has changed. Verify that the content is same as the value: **dip_check_prev*32500000**. You will see hexadecimal equivalent (displaying bytes in the order 0 -> 3).
+    Ta thấy giá trị thanh ghi bộ đếm thay đổi vì bộ định thời bắt đầu chạy và quá trình đếm ngược bắt đầu.
+12. Nhấn nút **Step Over** để thực hiện lệnh ghi vào cổng LED và sẽ tắt LED vì đếm = 0.
+13. Nhấn đúp vào điểm dừng thứ **năm** (dùng để ghi vào cổng LED), để chương trình chạy tự do.
+14. Nhấn nút **Resume** để tiếp tục thực hiện chương trình. Lần này chương trình liên tục chạy, thay đổi mẫu đèn LED sáng theo tốc độ cài đặt của công tắc.
+15. Gạt công tắc để thay đổi độ trễ và quan sát hiệu ứng.
+16. Nhấn một nút bấm và quan sát thấy chương trình dừng ở điểm dừng thứ tư. Nội dung thanh ghi bộ định thời và thanh ghi điều khiển hiện đỏ vì giá trị bộ đếm và giá trị thanh ghi điều khiển thay đổi do bộ định thời dừng hàm gọi. (Trong Memory monitor, có thể sẽ cần nhấn chuột phải vào địa chỉ đang được kiểm tra và nhấn *Reset* để làm mới chế độ xem bộ nhớ).
+17. Kết thúc phiên làm việc bằng cách nhấn nút **Terminate**.
 
-    >E.g. for dip_check_prev = 1; the value is 0x01EFE920; (reversed: 0x20E9EF01)
-12.	Click on the **Resume** button to continue execution of the program. The program will stop at the writing to the LED port (skipping fourth breakpoint as center push button as has not occurred).
+### Tạo kịch bản liên kết
 
-    Notice that the value of the counter register is changed from the previous one as the timer was started and the countdown had begun.
-13.	Click on the **Step Over** button to execute one statement which will write to the LED port and which should turn OFF the LEDs as the count=0.
-14.	Double-click on the **fifth** breakpoint, the one that writes to the LED port, so the program can execute freely.
-15.	Click on the **Resume** button to continue execution of the program. This time it will continuously run the program changing LED lit pattern at the switch setting rate.
-16.	Flip the switches to change the delay and observe the effect.
-17.	Press a push button and observe that the program suspends at the fourth breakpoint.  The timer register content as well as the **control register** (offset 0x08) is red as the counter value had changed and the control register value changed due to timer stop function call. (In the Memory monitor, you may need to right click on the address that is being monitored and click Reset to refresh the memory view.)
-18.	Terminate the session by clicking on the **Terminate** button.
-
-### Generate Linker Script
-1. Go back to **Design** perspecive.
-1. Right click on **lab5_system > lab5** from the Explorer and click **Generate Linker Script**. Note that all four major sections, code, data, stack and heap are to be assigned to BRAM controller.
-1. In the Basic Tab change the Code and Data sections to **ps7_ddr_0**, leaving the Heap and Stack in **axi_bram_ctrl_0_Mem0** and click **Generate**, and click **Yes** to overwrite.
+1. Quay lại phần **Design**.
+2. Nhấn chuột phải vào **lab5_system > lab5** trong Explorer và nhấn **Generate Linker Script**. Lưu ý 4 phần chính, code, dữ liệu, ngăn xếp và heap được gán cho bộ điều khiển BRAM (Block RAM).
+3. Ở tab Basic đổi phần *Code and Data* thành **ps7_ddr_0**, để phần *Heap and Stack* thành **axi_bram_ctrl_0_Mem0** và nhấn **Generate**, và nhấn **Yes** để ghi đè. 
     <p align="center">
     <img src ="pics/lab4/6_bram.jpg" width="80%"  height="80%"/>
     </p>
     <p align = "center">
-    <i>Generate linker script</i>
+    <i>Tạo kịch bản liên kết</i>
     </p>
-1. **Rebuild** the project.
-1. Right click on **lab5_system > lab5** from the Explorer and click **Run as > 1 Launch Hardware (Single Application Debug)**. Click **Yes** if prompted to relaunch the session.
-    >Observe the Vitis Serial Terminal window as the program executes. Play with dip switches and observe the LEDs. Notice that the system is relatively slow in displaying the message and the LED blinks much slower as the stack and heap are from a non-cached BRAM memory.
-1. When finished, click on the Terminate button in the Console tab.
-19.	**Exit** Vitis and Vivado.
-20.	**Power OFF** the board.
 
-## Conclusion
+4. **Rebuild** dự án .
+5. Nhấn chuột phải vào **lab5_system > lab5** trong Explorer và nhấn **Run as > 1 Launch Hardware (Single Application Debug)**. Nhấn **Yes** nếu yêu cầu khởi động lại phiên làm việc. 
 
-This lab led you through developing software that utilized CPU’s private timer function calls and achieved the desired functionality.  You verified the functionality in hardware. Additionally, you used the Vitis debugger to view the content of variables and memory, and stepped through various part of the code. If needed, you can use a linker script to target various segments in various memories. When the application is too big to fit in the internal BRAM, you can download the application in external memory and then execute the program.
+	>Quan sát cửa sổ Vitis Serial Terminal khi chương trình đang chạy. Gạt công tắc trượt và quan sát các LED. Thấy rằng hệ thống khá chậm trong việc hiển thị nội dung và LED nháy chậm hơn nhiều do ngăn xếp và heap là từ bộ nhớ BRAM không được lưu trữ tạm thời.*
+6. Khi hoàn tất, nhấn nút *Terminate* trong tab *Console*.
+7. Thoát Vitis và Vivado.
+8. Ngắt nguồn bảng mạch.
+
+## Kết luận
+
+Lab này hướng dẫn cách phát triển phần mềm sử dụng bộ định thời riêng của CPU và đạt được chức năng mong muốn. Bạn đã xác minh chức năng trong phần cứng. Bên cạnh đó bạn sử dụng công cụ gỡ lỗi của Vitis để xem nội dung của biến và bộ nhớ, và đi qua nhiều phần của đoạn code. Nếu cần, bạn có thể sử dụng một kịch bản liên kết để tìm tới các phần trong nhiều bộ nhớ. Khi ứng dụng quá lớn so với BRAM, bạn có thể tải ứng dụng vào bộ nhớ ngoài và sau đó thực hiện chương trình.
+

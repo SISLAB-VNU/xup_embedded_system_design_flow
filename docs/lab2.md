@@ -1,215 +1,246 @@
-# Adding IP cores in PL
+# Thêm các lõi IP vào PL
 
-## Objectives
+## Mục tiêu:
 
-After completing this lab, you will be able to:
-*	Configure the GP Master port of the PS to connect to IP in the PL.
-*	Add additional IP to a hardware design.
-*	Setup some of the compiler settings.
+Sau khi hoàn thành bài thực hành này, bạn sẽ có khả năng:
+*   Cấu hình cổng GP Master của PS để kết nối với IP trong PL.
+*   Thêm IP bổ sung vào thiết kế phần cứng.
+*   Thiết lập một số cài đặt trình biên dịch.
 
-## Steps
+## Các bước thực hiện
 
-### Open the Project
+### Mở dự án
 
-1. Open the previous project.
-2.	Select **File > Project > Save As…** to open the Save Project As dialog box. Enter **lab2** as the project name.  Make sure that the **Create Project Subdirectory** option is checked, the project directory path is **{labs}** and click OK.
-This will create the lab2 directory and save the project and associated directory with lab2 name.
+1. Mở dự án trước đó.
+2. Chọn **File > Project > Save As...** để mở dự án đã lưu dưới dạng hộp thoại. Nhập lab2 làm tên dự án. Đảm bảo rằng tùy chọn Tạo Thư mục Dự án Con đã được chọn, đường dẫn thư mục dự án là **{labs}** và nhấp OK. Điều này sẽ tạo ra thư mục lab2 và lưu dự án và thư mục liên quan với tên lab2.
 
-### Add Two Instances of GPIO
+### Thêm hai thực thể GPIO
 
-1.	In the Sources panel, expand system_wrapper, and double-click on the system.bd (system_i) file to invoke IP Integrator.
-2.	Double click on the Zynq block in the diagram to open the Zynq configuration window.
-3.	Select **PS-PL Configuration** page menu on the left.
-4.	Expand **AXI Non Secure Enablement > GP Master AXI Interfaces**, if necessary, and click on Enable **M_AXI_GP0 interface** check box under the field to enable the AXI GP0 port.
-5.	Expand **General > Enable Clock Resets** and select the FCLK_RESET0_N option.
-6.	Select the **Clock Configuration** tab on the left. Expand the **PL Fabric Clocks** and select the FCLK_CLK0 option (with requested clock frequency of 100.000000 MHz) and click OK.
-7.	Notice the additional *M_AXI_GPO* interface, and *M_AXI_GPO_ACLK*, *FCLK_CLK0*, and *FCLK_RESET0_N* ports are now included on the Zynq block. You can click the regenerate button to redraw the diagram to get something like this:
+1. Trong bảng điều khiển Nguồn, mở rộng system_wrapper và nhấp đúp vào tệp system.bd (system_i) để mở bộ tích hợp IP.
+2. Nhấp đúp vào khối Zynq trong sơ đồ để mở cửa sổ cấu hình Zynq.
+3. Chọn mục **PS-PL Configuration** ở phía trái.
+4. Mở rộng **AXI Non Secure Enablement** > **GP Master AXI Interfaces**, nếu cần, và nhấp vào ô Enable **M_AXI_GP0 interface** ở phía dưới để bật cổng AXI GP0.
+5. Mở rộng **General > Enable Clock Resets** và chọn tùy chọn FCLK_RESET0_N.
+6. Chọn tab **Clock Configuration** ở phía trái. Mở rộng **PL Fabric Clocks** và chọn tùy chọn FCLK_CLK0 (với tần số clock yêu cầu là 100.000000 MHz) và nhấp OK.
+7. Chú ý rằng sự bổ sung giao diện *M_AXI_GPO*,và các cổng *M_AXI_GPO_ACLK*, *FCLK_CLK0*, và *FCLK_RESET0_N* bây giờ được ở trong khối Zynq. Bạn có thể nhấp vào nút regenerate để vẽ lại sơ đồ để có cái gì đó giống như sau:
 
 <p align="center">
 <img src ="pics/lab2/1_BlockAXI.jpg " width="40%" height="80%"/>
 </p>
 <p align = "center">
-<i>Zynq system with AXI and clock interfaces</i>
+<i>Hệ thống Zynq với giao diện AXI và clock</i>
 </p>
 
-8.	Next add an IP by **right clicking on the Diagram window> Add IP** and search for AXI GPIO in the catalog.
+8. Tiếp theo, thêm một IP bằng cách **nhấp phải vào cửa sổ Sơ đồ (Diagram window) > Add IP** và tìm kiếm AXI GPIO trong danh mục.
 
-9.	Double-click the _AXI GPIO_ to add the core to the design. The core will be added to the design and the block diagram will be updated.
+9. Nhấp đúp vào AXI GPIO để thêm lõi vào thiết kế. Lõi này sẽ được thêm vào thiết kế và sơ đồ khối sẽ được cập nhật.
 
-10.	Click on the AXI GPIO block to select it, and in the properties tab, change the name to **switches**.
+10. Nhấp vào khối AXI GPIO để chọn nó, và trong tab thuộc tính (Properties), đổi tên thành **switches**.
 
    <p align="center">
    <img src ="pics/lab2/2_AXIblockadd.jpg "  width="50%" height="80%"/>
    </p>
    <p align = "center">
-   <i>Change AXI GPIO default name</i>
+   <i>Đổi tên mặc định AXI GPIO</i>
    </p>
 
-11.	Double click on the _AXI GPIO block_ to open the customization window.
-12.	Click the **Board** tag, From the **Board Interface** drop down, select **sws 2bits** for **GPIO** IP Interface. Leave GPIO as default setting.
-13.	Next, click the IP configuration tab, and notice the width has already been set to match the switches on the *PYNQ-Z2* (2)  
+11. Nhấp đúp vào khối AXI GPIO để mở cửa sổ tùy chỉnh.
+12. Chọn thẻ Board, từ **Board Interface** kéo xuống, chọn **sws 2bits** cho giao diện **GPIO** IP. Để lại GPIO ở cài đặt mặc định.
+13. Tiếp theo, nhấp vào tab IP Configuration và lưu ý rằng độ rộng đã được đặt để phù hợp với các công tắc trên PYNQ-Z2 (2)
 
-    Notice that the peripheral can be configured for two channels, but, since we want to use only one channel without interrupt, leave the **Enable Dual Channel** and **Enable Interrupt** unchecked.  
-    > Channels here just refer to wired connections between peripherals and other components. Dual Channel would enable you to signals of 128 bits in lenght where has using one channel only allow for signals 64 bits in lenght. This option is to increase the bandwidth of the connection this periperhal could send. 
-14.	Click OK to save and close the customization window.
-15.	Notice that **Designer assistance** is available. Click on Run Connection Automation, and select **/switches/S_AXI**
-16.	Click OK when prompted to automatically connect the master and slave interfaces. Notice that two additional blocks, Processor System Reset, and AXI Interconnect have automatically been added to the design. (The blocks can be dragged to be rearranged, or the design can be redrawn).
+  Chú ý rằng thiết bị ngoại vi có thể được cấu hình cho hai kênh, nhưng vì chúng ta chỉ muốn sử dụng một kênh mà không có ngắt, hãy để **Enable Dual Channel** và **Enable Interrupt** ở trạng thái không được chọn.
+      > Ở đây, "channels" chỉ đơn giản là đường kết nối dây giữa các thiết bị ngoại vi và các thành phần khác. Dual Channel sẽ cho phép bạn truyền tín hiệu có độ dài 128 bit, trong khi việc sử dụng chỉ một kênh chỉ cho phép tín hiệu có độ dài 64 bit. Tùy chọn này là để tăng băng thông của kết nối mà thiết bị ngoại vi này có thể gửi.
 
-   <p align="center">
-   <img src ="pics/lab2/3_Dsgnswauto.jpg"  width="60%" height="80%"/>
-   </p>
-   <p align = "center">
-   <i>Design with switches automatically connected</i>
-   </p>
+14. Nhấp vào OK để lưu và đóng cửa sổ tùy chỉnh.
+15. Chú ý rằng **Designer assistance** đang sẵn có. Nhấp vào Run Connection Automation và chọn **/switches/S_AXI.**
+16. Nhấp OK khi được yêu cầu để tự động kết nối giao diện master và slave. Chú ý rằng hai khối bổ sung, Processor System Reset và AXI Interconnect, đã tự động được thêm vào thiết kế. (Các khối có thể được kéo để sắp xếp lại hoặc thiết kế có thể được vẽ lại).
 
-17.	Add another instance of the GPIO peripheral (Add IP). Name it as **buttons**.
-19.	Double click on the IP block, in the **GPIO interface** select **btns 4bits** for the _PYNQ-Z2_, click OK.
+	<p align="center">
+	<img src ="pics/lab2/3_Dsgnswauto.jpg"  width="60%" height="80%"/>
+	</p>
+	<p align = "center">
+	<i>Thiết kế với các công tắc được kết nối tự động.</i>
+	</p>
 
-    At this point connection automation could be run, or the block could be connected manually. This time the block will be connected manually.
-20.	Double click on the _AXI Interconnect_ (name : ps7_0_axi_periph) and change the Number of **Master Interfaces** to 2 and click OK
+17. Thêm một trường hợp khác của thiết bị ngoại vi GPIO (Add IP). Đặt tên cho nó là buttons.
+18. Nhấp đúp vào khối IP, trong giao diện GPIO chọn btns 4bits cho PYNQ-Z2, nhấp OK.
 
+Ở bước này, có thể chạy tự động kết nối, hoặc khối có thể được kết nối thủ công. Lần này, khối sẽ được kết nối thủ công.
+
+19. Nhấp đúp vào AXI Interconnect (tên: ps7_0_axi_periph) và thay đổi Số lượng **Master Interfaces** thành 2, sau đó nhấp OK.
     <p align="center">
     <img src ="pics/lab2/4_AXIrecust.jpg "  width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Add master port to AXI Interconnect</i>
-    </p>
+    <i>Thêm cổng master vào AXI Interconnect.</i>
+	</p>
 
-21.	Click on the **s_axi** port of the buttons AXI GPIO block (name: buttons), and drag the pointer towards the AXI Interconnect block.
+20. Nhấp vào cổng **s_axi** của khối AXI GPIO (tên: buttons), và kéo con trỏ về phía khối AXI Interconnect.
 
-      The message "Found 1 interface" should appear, and a green tick should appear beside the M01_AXI port on the AXI Interconnect indicating this is a valid port to connect to. Drag the pointer to this port and release the mouse button to make the connection.
-22.	In a similar way, connect the following ports:
+	Thông báo "Found 1 interface" sẽ xuất hiện, và một dấu tích xanh sẽ xuất hiện bên cạnh cổng M01_AXI trên AXI Interconnect, chỉ ra rằng đây là một cổng hợp lệ để kết nối. Kéo con trỏ đến cổng này và nhả nút chuột để thực hiện kết nối.
+21. Tương tự, kết nối các cổng sau:
+	*buttons s_axi_aclk -> Zynq7 Processing System FCLK_CLK0*
+	> Điều này đảm bảo rằng hệ thống xử lý Zynq và các thiết bị ngoại vi giao tiếp đồng bộ. (Bạn có nhớ chúng ta đã đặt tần số của đồng hồ xử lý là bao nhiêu không?).
+	
+	*buttons s_axi_aresetn -> Processor System Reset peripheral_aresetn*.
+	> Hệ thống xử lý Zynq kiểm soát reset đối với các thiết bị ngoại vi.
 
-    *buttons s_axi_aclk -> Zynq7 Processing System  FCLK_CLK0*
-    > This ensures that the Zynq proccessing system and the peripherals communicate synchronously. (**Can you remember what frequency we set the proccessor clock to?**).
-
-    *buttons s_axi_aresetn -> Processor System Reset peripheral_aresetn*.
-    > The Zynq proccesing system controls the reset to the peripherals.
-
-    *AXI Interconnect M01_ACLK -> Zynq7 Processing System  FCLK_CLK0*.
-
-    *AXI Interconnect M01_ARESETN -> Processor System Reset peripheral_aresetn*.
-
-    The block diagram should look similar to this:
-
+	*AXI Interconnect M01_ACLK -> Zynq7 Processing System FCLK_CLK0*.
+	
+	*AXI Interconnect M01_ARESETN -> Processor System Reset peripheral_aresetn*.
+	
+	Sơ đồ khối nên trông giống như sau:
+	
     <p align="center">
     <img src ="pics/lab2/5_AXIbuttsw.jpg"  width="70%" height="80%"/>
     </p>
     <p align = "center">
-    <i>System Assembly View after Adding the Peripherals</i>
-    </p>
+    <i>Tổng thể hệ thống sau khi thêm các thiết bị ngoại vi</i>
+	</p>
 
-23.	Click on the **Address Editor** tab, and expand **processing_system7_0/Data > Unassigned Slaves** if necessary.
-24.	Notice that switches has been automatically assigned an address, but buttons has not (since it was manually connected). Right click on **/buttons/S_AXI** and select **Assign**.
+23. Nhấp vào tab **Address Editor**, và mở rộng **processing_system7_0/Data > Unassigned Slaves** nếu cần.
+24. Chú ý rằng công tắc (switches) đã được tự động gán một địa chỉ, nhưng nút nhấn (buttons) chưa (do được kết nối thủ công). Nhấp phải vào **/buttons/S_AXI** và chọn **Assign**.
 
-Note that both peripherals are assigned in the address range of _0x40000000_ to _0x7FFFFFFF_ (GP0 range).
+Lưu ý rằng cả hai thiết bị ngoại vi được gán trong khoảng địa chỉ từ 0x40000000 đến 0x7FFFFFFF (khoảng GP0).
 
    <p align="center">
    <img src ="pics/lab2/6_AXIAdd.jpg"  width="70%" height="80%"/>
    </p>
    <p align = "center">
-   <i>Peripherals Memory Assign</i>
+   <i>Gán bộ nhớ cho các thiết bị ngoại vi.</i>
    </p>
 
-### Make GPIO Peripheral Connections External
-   <!--
-   3-1.	The push button and dip switch instances will be connected to corresponding pins on the board.  This can be done manually, or using Designer Assistance.  Normally, one would consult the board’s user manual to find this information.
-   -->
-1.	In the Diagram view, notice that **Designer Assistance** is available. We will manually create the ports and connect.
-2.	Right-Click on the _GPIO port_ of the switches instance and select **Make External** to create the external port. This will create the external port named **GPIO_0** and connect it to the peripheral. Because Vivado is “board aware”, the pin constraints will be automatically applied to the port.
-3.	Select the **GPIO_0** port and change the name to **switches** in its properties form.
-The width of the interface will be automatically determined by the upstream block.
-4.	For the buttons GPIO, click on the **Run Connection Automation** link.
-5.	In the opened GUI, select **btns_4bits** (for _PYNQ-Z2_) under the options section.
-6.	Click OK.
-7.	Select the created external port and change its name to **buttons**.
-8.	Run Design Validation (**Tools -> Validate Design**) and verify there are no errors.
+# Thực hiện kết nối ngoại vi GPIO với bên ngoài.
+1. Trong Diagram view, hãy chú ý rằng **Designer Assistance** có sẵn. Chúng ta sẽ tạo các cổng và kết nối một cách thủ công.
+2. Nhấp chuột phải vào cổng GPIO của bộ chuyển đổi và chọn Make External để tạo cổng ngoại vi. Điều này sẽ tạo ra cổng ngoại vi có tên là **GPIO_0** và kết nối nó với ngoại vi. Bởi vì Vivado là "board aware", các ràng buộc pin sẽ được áp dụng tự động cho cổng này.
+3. Chọn cổng **GPIO_0** và đổi tên thành **"switches"** trong cửa sổ thuộc tính của nó. Chiều rộng của giao diện sẽ được xác định tự động bởi upstream block.
+4. Đối với nút GPIO, nhấp vào liên kết **Run Connection Automation**.
+5. Trong GUI được mở, chọn **btns_4bits** (đối với PYNQ-Z2) trong phần tùy chọn.
+6. Nhấp OK
+7. Chọn cổng ngoại vi được tạo ra và đổi tên thành **"buttons"**.
+8. Chạy Kiểm tra Thiết kế (**Tools -> Validate Design**) và kiểm tra xem có lỗi nào không.
 
-    The design should now look similar to the diagram below
-
+	Bây giờ, thiết kế nên trông giống như sơ đồ dưới đây
     <p align="center">
     <img src ="pics/lab2/7_Finaldsgn.jpg "  width="80%" height="80%"/>
     </p>
     <p align = "center">
-    <i>Completed design</i>
-    </p>
+    <i>Thiết kế đã hoàn thành</i>
+	</p>
 
-9.	In the Flow Navigator, click **Run Synthesis**. (Click Save if prompted) and when synthesis completes, select Open Synthesized Design  and click OK
-10.	 In the shortcut Bar, select **I/O Planning** from the Layout dropdown menu
+9. Trong Flow Navigator, nhấp vào **Run Synthesis** (Nhấp Save nếu có thông báo) và khi tổng hợp hoàn tất, chọn Open Synthesized Design và nhấp OK.
+10. Trong thanh tắt, chọn I/O Planning từ menu thả xuống Layout.
 
    <p align="center">
    <img src ="pics/lab2/8_iop.jpg"  width="30%" height="80%"/>
    </p>
    <p align = "center">
-   <i>Switch to the IO planning view</i>
+   <i>Chuyển đổi sang chế độ xem I/O Planning.</i>
    </p>
 
-11.	In the I/O ports tab, expand the two GPIO icons, and expand *buttons_tri_i*, and *switches_tri_i*, and notice that the ports have been automatically assigned pin locations, along with the other Fixed IO ports in the design, and an I/O Std of _LVCMOS33_ (*PYNQ-Z2*) has been applied. If they were not automatically applied, pin constraints can be included in a constraints file, or entered manually or modified through the I/O Ports tab.
-	>If buttons_tri_i, and switches_tri_i do not appear in the I/O ports tab open Elaborated Design and check to see if they are grounded. If they are grounded please a mistake was likely made in configuring this system. Please repeat the previous steps carefully!.
-### Generate Bitstream and Export Hardware
+11. Trong tab I/O Ports, mở rộng hai biểu tượng GPIO và mở rộng buttons_tri_i, và switches_tri_i, và chú ý rằng các cổng đã được tự động gán vị trí chân, cùng với các cổng IO cố định khác trong thiết kế, và đã áp dụng I/O Std của LVCMOS33 (PYNQ-Z2). Nếu chúng không được áp dụng tự động, pin constraints (ràng buộc chân) có thể được bao gồm trong constraints file hoặc được nhập thủ công hoặc được sửa đổi thông qua tab I/O Ports.
+	>Nếu buttons_tri_i và switches_tri_i không xuất hiện trong tab I/O Ports, mở Elaborated Design và kiểm tra xem chúng có được kết nối đất không. Nếu chúng đã được kết nối đất, có thể đã xảy ra một sai sót trong cấu hình hệ thống này. Hãy lặp lại các bước trước đó một cách cẩn thận!.
 
-1.	Click on **Generate Bitstream**, and click Yes if prompted to **Launch Implementation** (Click Yes if prompted to save the design).
-2.	Click Cancel.
-3.	Export the hardware by clicking **File > Export > Export Hardware** and click OK. This time, there is hardware in Programmable Logic (PL) and a bitstream has been generated and should be included in the export.
-4.	Click Yes to overwrite the hardware module.
+# Tạo Bitstream và trích xuất Phần Cứng.
 
-### Generate TestApp Application in Vitis IDE
+1. Nhấp vào **Generate Bitstream**, và nhấp Yes nếu có thông báo L**aunch Implementation** (Nhấp Yes nếu có thông báo để lưu thiết kế).
+2. Nhấp Cancel.
+3. Xuất phần cứng bằng cách nhấp **File > Export > Export** Hardware và nhấp OK. Lần này, có phần cứng trong Programmable Logic (PL) và một Bitstream (chuỗi bit) đã được tạo và nên được bao gồm trong quá trình xuất.
+4. Nhấp Yes để ghi đè lên mô-đun phần cứng.
 
-1.  Start Vitis IDE by clicking **Tools > Launch Vitis IDE** and click OK.
-1.	Right click on the previous application project (lab1_system) from the Explorer view and select **Close System Project**.
-1.	From the File menu select **File > New > Application Project**. Click **Next** to skip the welcome page if necessary.
-1.  In the Platform Selection window, select **Create a new platform from hardware (XSA)** and browse to select the **{labs}\lab2\system_wrapper.xsa** file exported before.
-1. Enter **lab2_platform** as the _Platform name_, click **Next.**
-1.	Name the project **lab2**, click **Next**.
-1.  Select **standalone_ps7_cortexa9_0**, click **Next**.
-1.	Select **Empty Application(C)** and click **Finish**.
-1.	Expand **lab2_system > lab2** in the Explorer view, and right-click on the **src** folder, and select **Import Sources...**.
-1.  Browse to select the **{sources}\lab2** folder, click **Open Folder**.
-1.  Select **lab2.c** and click **Finish**.
+# Tạo ứng dụng TestApp trong Vitis IDE.
+
+1. Khởi động Vitis IDE bằng cách nhấp vào **Tools > Launch Vitis IDE** và nhấp vào OK.
+2. Nhấp chuột phải vào dự án ứng dụng trước đó (lab1_system) từ chế độ xem Explorer và chọn **Close System Project**.
+3. Từ menu File, chọn **File > New > Application Project.** Nhấp **Next** để bỏ qua trang chào đón nếu cần thiết.
+4. Trong cửa sổ Platform Selection, chọn **Create a new platform from hardware (XSA)** và duyệt để chọn tệp **{labs}\lab2\system_wrapper.xsa** đã xuất trước đó.
+5. Nhập **lab2platform..as the _Platform name, nhấp Next**.
+6. Đặt tên dự án là **lab2,** nhấp **Next**.
+7. Chọn **standalone_ps7_cortexa9_0**, nhấp **Next**.
+8. Chọn **Empty Application(C)** và nhấp **Finish**.
+9. Mở rộng **lab2_system > lab2** trong chế độ xem Explorer, chuột phải vào thư mục src, và chọn **Import Sources…**.
+10. Duyệt để chọn thư mục **{sources}\lab2**, nhấp **Open Folder**.
+11. Chọn **lab2.c** và nhấp **Finish**.
     <p align="center">
     <img src ="pics/lab2/12_ImportSrc.jpg"  width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Import resources from the local file system</i>
-    </p>
+    <i> Dùng mẫu có sẵn từ hệ thống</i>
+	</p>
 
-1. Build the project either by clicking the hammer button or by right-clicking on the application project and selecting Build Project. 
+12. Xây dựng dự án bằng cách nhấp vào nút búa hoặc bằng cách nhấp chuột phải vào application project và chọn Build Project.
 
-### Test in Hardware
+# Kiểm thử trên phần cứng
 
-1.	Make sure that micro-USB cable(s) is(are) connected between the board and the PC. Change the boot mode to JTAG. Turn ON the power of the board.
-        >To changed the PYNQ-Z2's boot mode to JTAG, locate the JTAG pins on the board beside the HDMI input port. There should be a dark gray removable pin connector on two of the pins. Make sure that this connector is connect to the JTAG pins which are the right two pins on the horizontal rows. 
-1. Open a serial communication utility for the COM port assigned on your system. The Vitis software platform provides a serial terminal utility will be used throughout the tutorial. You can also use your preferred serial terminal application.
-   * To open this utility, select **Window > Show view**.
-   * In the Show View dialog box, type **terminal** in the search box.
-   * Select **Vitis Serial Terminal** and click **Open**.
+1. Đảm bảo rằng cáp micro-USB đã được kết nối giữa bo mạch và máy tính. Thay đổi chế độ khởi động thành JTAG. Bật nguồn của bo mạch.
+   >Để thay đổi chế độ khởi động của PYNQ-Z2 thành JTAG, định vị các chân JTAG trên bo mạch bên cạnh cổng nhập HDMI. Có thể thấy có một kết nối pin màu xám đậm có thể tháo rời ở hai trong số các chân này. Hãy đảm bảo rằng kết nối này đã được kết nối với các chân JTAG, đó là hai chân bên phải trên các hàng ngang.
+2. Mở một serial communication nối tiếp cho cổng COM được gán trên hệ thống của bạn. Nền tảng phần mềm Vitis cung cấp serial terminal utility sẽ được sử dụng trong toàn bộ hướng dẫn. Bạn cũng có thể sử dụng serial terminal application ưa thích của bạn.
+   * Để mở tiện ích này, chọn **Window > Show view**.
+   * Trong hộp thoại Show View, gõ **terminal** vào ô tìm kiếm.
+   * Chọn **Vitis Serial Terminal** và nhấp **Open**.
     <p align="center">
     <img src ="pics/lab1/15_OpenVitisTerminal.jpg" width="35%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Open the Vitis Serial Terminal </i>
-    </p>
+	<i>Mở Vitis Serial Terminal</i>
+	</p>
 
-2. Click the Add button in the Vitis Serial Terminal to connect to a serial terminal. Select the port from the dropdown menu. Keep the Advanced Settings as-is. Click OK.
+3. Nhấp vào nút Add trong Vitis Serial Terminal để kết nối với một serial terminal. Chọn cổng từ menu kéo xuống. Giữ nguyên Advanced Settings. Nhấp OK.
    <p align="center">
-    <img src ="pics/lab1/16_ConnectSerial.jpg" width="35%" height="80%"/>
-    </p>
-    <p align = "center">
-    <i> Connect to serial port </i>
-    </p>
+   <img src ="pics/lab1/16_ConnectSerial.jpg" width="35%" height="80%"/>
+   </p>
+   <p align = "center">
+   <i>Kết nối tới cổng nối tiếp</i>
+   </p>
 
-1. Right-click **lab2_system > lab2** and select **Launch Hardware (Single Application Debug)**.
+4. Nhấp chuột phải vào **lab2_system > lab2** và chọn **Launch Hardware (Single Application Debug)**.
 
-7. Play with the buttons and switches, you should see the following output on the Terminal tab.
+5. Tương tác với các buttons và switches, bạn sẽ thấy đầu ra sau trên tab Terminal.
     <p align="center">
     <img src ="pics/lab2/14_TestAppRun.jpg" width="60%" height="80%"/>
     </p>
     <p align = "center">
-    <i> Connect to serial port </i>
-    </p>
+	<i>Kết nối tới serial port</i>
+	</p>
 
-7. Close Vivado and Vitis IDE by selecting **File > Exit** in each program.
+6. Đóng Vivado và Vitis IDE bằng cách chọn **File > Exit** trong mỗi chương trình.
 
-## Conclusion
+## TỔNG KẾT
 
-GPIO peripherals were added from the IP catalog and connected to the Processing System through the 32b Master GP0 interface. The peripherals were configured and external FPGA connections were established. A TestApp application project was created and the functionality was verified after downloading the bitstream and executing the program.
+Các thiết bị ngoại vi GPIO đã được thêm từ danh mục IP và được kết nối với Hệ thống Xử lý thông qua giao diện 32 bit Master GP0. Các bộ ngoại vi đã được cấu hình và các kết nối FPGA bên ngoài đã được thiết lập. Một dự án ứng dụng TestApp đã được tạo và chức năng đã được xác minh sau khi tải bitstream (chuỗi bit) và thực thi chương trình.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
